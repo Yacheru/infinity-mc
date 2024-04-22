@@ -21,7 +21,7 @@ export default function Form({item}) {
         }
 
         if (activeIndex !== null) {
-            console.log("Выбранный див:", activeIndex, inputValue);
+            console.log(activeIndex, inputValue);
         } else {
             console.log("Див не выбран");
         }

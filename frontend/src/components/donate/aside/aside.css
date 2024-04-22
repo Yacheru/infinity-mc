@@ -36,3 +36,12 @@
 .aside__items p:last-child {
     margin-bottom: 60px;
 }
+
+@media (max-width: 900px) {
+    .aside__title {
+        font-size: 32px;
+    }
+    .aside__items {
+        font-size: 12px;
+    }
+}
