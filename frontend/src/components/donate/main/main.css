@@ -79,3 +79,31 @@
     transition: all .3s;
     opacity: 0;
 }
+
+@media (max-width: 900px) {
+    .main__item-title {
+        font-size: 24px;
+    }
+    .main {
+        width: 100%;
+        height: 50%;
+        margin-left: 0;
+    }
+    .main__item-navbar {
+        top: 70%;
+    }
+}
+
+@media (max-width: 900px) {
+    .main__item-title {
+        font-size: 24px;
+    }
+    .main {
+        width: 100%;
+        height: 50%;
+        margin-left: 0;
+    }
+    .main__item-navbar {
+        top: 70%;
+    }
+}

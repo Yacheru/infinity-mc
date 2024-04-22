@@ -1,6 +1,6 @@
 .footer {
     width: 100%;
-    height: 75px;
+    height: 10%;
     background-color: #101010;
     border-radius: 20px;
     border: 1px solid #303030;
@@ -61,4 +61,10 @@
     color: #373737;
     margin: 0 5px 5px 0;
     bottom: 2px;
+}
+
+@media (max-width: 900px) {
+    .footer {
+        margin-top: 30px;
+    }
 }
