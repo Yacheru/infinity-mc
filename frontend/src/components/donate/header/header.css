@@ -8,7 +8,6 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    
 }
 
 .header__project {
@@ -38,8 +37,7 @@
     position: relative;
 }
 
-.header__item-link:after {    
-    background: none repeat scroll 0 0 transparent;
+.header__item-link:after {
     bottom: 0;
     content: "";
     display: block;

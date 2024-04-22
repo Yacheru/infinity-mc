@@ -1,0 +1,28 @@
+.term__header {
+    font-size: xx-large;
+    margin-bottom: 50px;
+}
+
+.term__ordered-preface {
+    margin-bottom: 30px;
+    font-size: larger;
+}
+
+.term__ordered-list {
+    background-color: #101010;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.term__ordered-item {
+    margin-bottom: 30px;
+    font-size: larger;
+}
+
+.term__ordered-item a {
+    color: #5865f2;
+}
+
+.term__ordered-item:last-child {
+    margin-bottom: 0;
+}

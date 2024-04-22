@@ -22,7 +22,7 @@
 .modal__content {
     padding: 20px;
     border-radius: 12px;
-    background-color: #101010;
+    background-color: #1a1a1a;
     width: 750px;
     transform: scale(0.5);
     transition: all .4s;
@@ -34,13 +34,9 @@
 }
 
 .modal__header {
-    font-size: x-large;
+    font-size: 36px;
 }
 
 .modal__hr {
     margin: 5px 0 10px 0;
-}
-
-.modal__description {
-    line-height: 1.5rem;
 }
