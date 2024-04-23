@@ -65,4 +65,7 @@
     .aside__items p {
         font-size: 14px;
     }
+    .aside__title {
+        font-size: 24px;
+    }
 }
