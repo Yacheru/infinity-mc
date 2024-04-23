@@ -56,8 +56,12 @@
     transition: ease .5s;
     color: #fff;
   }
-  @media screen and (max-height: 300px) {
-      ul {
-          margin-top: 40px;
+  @media (max-width: 900px) {
+      .header__project {
+          display: none;
       }
+      .header__item {
+          margin: 0 15px 0 15px;
+      }
+
   }

@@ -60,3 +60,9 @@
         margin-right: 15px;
     }
 }
+
+@media (max-width: 500px) {
+    .aside__items p {
+        font-size: 14px;
+    }
+}
