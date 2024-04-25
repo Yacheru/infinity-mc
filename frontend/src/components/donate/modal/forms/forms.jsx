@@ -39,10 +39,10 @@ export default function Form({item}) {
             <div className={'modal__durations'}>
                 {Array.from({length: costsLen}, (_, i) => (
                     <div className={`modal__duration${activeIndex === i || costsLen === 1 ? ' duration-active' : ''}`} key={i} onClick={() => handleDurationClick(i)}>
-                        <div className={`modal__duration-checkbox${activeIndex === i || costsLen === 1  ? ' checkbox-active' : ''}`}></div>
+                        <div className={`modal__duration-checkbox`}></div>
                         <div className={'modal__duration-text'}>
                             <p>{ data[item].costs[`${i + 1}`][0] }</p>
-                            <p>{data[item].costs[`${i + 1}`][1]}</p>
+                            <p>{ data[item].costs[`${i + 1}`][1] }</p>
                         </div>
                     </div>
                 ))}
@@ -53,11 +53,11 @@ export default function Form({item}) {
                     <div className={'modal__checkbox-item'}>
                         <label className={'modal__checkbox-label'} htmlFor="">
                             <input type="checkbox"/>
+                            Я принимаю условия
+                            <a href="/terms" target={'_blank'}>пользовательского соглашения</a>
                         </label>
                     </div>
                     <div className={'modal__checkbox-text'}>
-                        <span> Я принимаю условия </span>
-                        <a href="/terms" target={'_blank'}>пользовательского соглашения</a>
                     </div>
                 </div>
             </div>
