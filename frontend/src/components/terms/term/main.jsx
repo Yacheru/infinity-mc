@@ -62,7 +62,7 @@ export default function Main() {
                     </ol>
                 </div>
                 <div className={'contact'}>
-                    Самозанятый:<span> Ярослав А. М.</span>
+                    Самозанятый:<span> Ярослав А. М. ИНН: 650116052207</span>
                     Контакты: (<a href="https://vk.com/notyacheru">https://vk.com/notyacheru</a>)
                 </div>
             </main>
