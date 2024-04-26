@@ -38,9 +38,6 @@ export default function Footer() {
                         </svg>
                     </a>
                 </div>
-                <a href="https://freekassa.ru" target="_blank" rel="noopener noreferrer">
-                    <img src="https://cdn.freekassa.ru/banners/big-dark-1.png" title="Прием платежей"/>
-                </a>
                 <a className='delevoper' href='https://discord.com/users/554089377446494248' target='_blank'>developed
                     by yacheru</a>
             </div>

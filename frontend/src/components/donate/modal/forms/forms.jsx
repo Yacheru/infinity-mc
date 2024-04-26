@@ -51,13 +51,13 @@ export default function Form({item}) {
                 <button className={'modal__navbuy-button'} onClick={handleGetForm} type={'button'}>Продолжить</button>
                 <div className={'modal__checkbox-box'}>
                     <div className={'modal__checkbox-item'}>
-                        <label className={'modal__checkbox-label'} htmlFor="">
-                            <input type="checkbox"/>
-                            Я принимаю условия
-                            <a href="/terms" target={'_blank'}>пользовательского соглашения</a>
+                        <label className={'modal__checkbox-label'} htmlFor="checkbox">
+                            <input type="checkbox" id={'checkbox'}/>
                         </label>
                     </div>
                     <div className={'modal__checkbox-text'}>
+                        Я принимаю условия
+                        <a href="/terms" target={'_blank'}> пользовательского соглашения</a>
                     </div>
                 </div>
             </div>

@@ -26,3 +26,24 @@
 .term__ordered-item:last-child {
     margin-bottom: 0;
 }
+
+.contact {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    border-radius: 20px;
+    background-color: #101010;
+    padding: 10px;
+}
+
+.contact span {
+    margin: 0 5px 0 5px;
+}
+
+.contact a {
+    color: #5865f2;
+}
+
+.contact__item {
+    margin-right: 5px;
+}

@@ -61,6 +61,10 @@ export default function Main() {
                         </li>
                     </ol>
                 </div>
+                <div className={'contact'}>
+                    Самозанятый:<span> Ярослав А. М.</span>
+                    Контакты: (<a href="https://vk.com/notyacheru">https://vk.com/notyacheru</a>)
+                </div>
             </main>
         </div>
     )
