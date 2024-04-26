@@ -90,6 +90,7 @@
     accent-color: #5865f2;
     vertical-align: middle;
     border: 1px solid #ddd;
+    margin: 0 0 0 5px;
 }
 
 .modal__checkbox-label a {
