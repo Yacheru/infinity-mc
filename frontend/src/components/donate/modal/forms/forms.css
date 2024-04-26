@@ -76,11 +76,9 @@
 }
 
 .modal__checkbox-label {
-    width: 50px;
+    width: 35px;
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .modal__checkbox-label input[type=checkbox] {
