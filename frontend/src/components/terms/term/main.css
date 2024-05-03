@@ -47,3 +47,7 @@
 .contact__item {
     margin-right: 5px;
 }
+
+.contact span {
+    color: #fff;
+}
