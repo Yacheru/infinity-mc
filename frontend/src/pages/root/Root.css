@@ -1,0 +1,20 @@
+#root {
+  max-width: 1260px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+#wrapper {
+  height: 80%;
+  padding: 10px 0;
+}
+
+@media (max-width: 900px) {
+  #root {
+    padding: 2rem;
+  }
+  #wrapper {
+    flex-wrap: wrap;
+  }
+}

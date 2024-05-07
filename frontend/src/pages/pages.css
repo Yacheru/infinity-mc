@@ -1,0 +1,28 @@
+.bgc-1 {
+    background-color: #101010;
+}
+
+.bgc-2 {
+    background-color: #1a1a1a;
+}
+
+.b {
+    border: 1px solid #303030;
+}
+
+.br10 {
+    border-radius: 10px;
+}
+
+.br20 {
+    border-radius: 20px;
+}
+
+.flex {
+    display: flex;
+}
+
+.center {
+    align-items: center;
+    justify-content: center;
+}

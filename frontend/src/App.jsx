@@ -1,14 +1,18 @@
-import Donate from "./components/donate/Donate.jsx";
-import Term from "./components/terms/Term.jsx";
 import React from "react";
-
 import { Routes, Route } from "react-router-dom";
+
+import Root from "./pages/root/Root.jsx";
+import Term from "./pages/terms/Terms.jsx";
+import Bans from "./pages/bans/Bans.jsx";
+
+import './pages/pages.css'
 
 export default function App() {
     return (
         <Routes>
-            <Route path='*' element={<Donate />} />
+            <Route path='*' element={<Root />} />
             <Route path='/terms' element={<Term />} />
+            <Route path='/bans' element={<Bans />} />
         </Routes>
     );
 }

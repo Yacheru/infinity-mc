@@ -1,0 +1,67 @@
+.footer {
+    width: 100%;
+    height: 10%;
+    border-radius: 20px;
+}
+
+.footer__main {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+.footer__items {
+    margin: 10px;
+}
+
+.footer__item {
+    margin-right: 20px ;
+}
+
+.footer__item:last-child {
+    margin-right: 0;
+}
+
+.discord:hover path {
+    fill: #5865f2;
+}
+
+.telegram:hover path {
+    fill: #1b92ce;
+}
+
+.vk:hover path {
+    fill: #0076fe;
+}
+
+.website:hover path {
+    fill: #804815;
+}
+
+.discord:hover path,
+.telegram:hover path,
+.vk:hover path,
+.website:hover path {
+    transition: all 1s;
+}
+
+.discord path,
+.telegram path,
+.vk path,
+.website path {
+    transition: all 1s;
+}
+
+.delevoper {
+    color: #373737;
+    margin: 0 5px 5px 0;
+    bottom: 2px;
+}
+
+@media (max-width: 900px) {
+    .footer {
+        margin-top: 30px;
+    }
+}

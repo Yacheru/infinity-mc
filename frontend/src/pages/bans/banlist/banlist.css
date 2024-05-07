@@ -1,0 +1,20 @@
+.banlist-box {
+    width: 100%;
+    height: 84%;
+    padding: 10px;
+}
+
+.banlist-box__title {
+    width: 100%;
+    height: 5%;
+}
+
+.banlist__title-item {
+    width: 33%;
+    margin-right: 50px;
+}
+
+.banlist__title-item:last-child {
+    margin-right: 0;
+}
+
