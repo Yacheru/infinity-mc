@@ -1,14 +1,20 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/jmoiron/sqlx"
+	"github.com/yacheru/infinity-mc.ru/backend"
+)
 
-type McRepository interface {
+type McBans interface {
+	GetAllBans(limit int) ([]backend.LbPunishments, error)
 }
 
 type Repository struct {
-	McRepository
+	McBans
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		McBans: NewMcMsql(db),
+	}
 }

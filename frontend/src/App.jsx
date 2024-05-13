@@ -12,7 +12,7 @@ export default function App() {
         <Routes>
             <Route path='*' element={<Root />} />
             <Route path='/terms' element={<Term />} />
-            <Route path='/bans' element={<Bans />} />
+            <Route exact path='/bans' element={<Bans />} />
         </Routes>
     );
 }

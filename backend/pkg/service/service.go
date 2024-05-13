@@ -1,14 +1,20 @@
 package service
 
-import "github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
+import (
+	"github.com/yacheru/infinity-mc.ru/backend"
+	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
+)
 
-type McService interface {
+type McBans interface {
+	GetAllBans(limit int) ([]backend.LbPunishments, error)
 }
 
 type Service struct {
-	McService
+	McBans
 }
 
 func NewService(repo *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		McBans: NewMcBansService(repo.McBans),
+	}
 }

@@ -5,6 +5,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+const (
+	lbPunishments = "libertybans_punishments"
+	lbBans        = "libertybans_bans"
+	lbVictims     = "libertybans_victims"
+	lbNames       = "libertybans_names"
+	lbHistory     = "libertybans_history"
+)
+
 type Config struct {
 	Host    string
 	Port    string
@@ -15,7 +23,8 @@ type Config struct {
 }
 
 func NewDatabaseDB(cfg Config) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("mariadb", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", cfg.Host, cfg.Port, cfg.User, cfg.Pass, cfg.Dbname, cfg.SSLMode))
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", cfg.User, cfg.Pass, cfg.Host, cfg.Port, cfg.Dbname)
+	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}

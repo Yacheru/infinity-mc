@@ -8,19 +8,19 @@ export default function Header() {
             <nav className='header__nav'>
                 <ul className='header__items flex'>
                     <li className='header__item'>
-                        <a className={'header__item-link'} href={'/'}>Донат</a>
+                        <a className={'header__item-link donat'} href={'/'}>Донат</a>
                     </li>
                     |
                     <li className='header__item'>
-                        <a className={'header__item-link'} href={'https://map.infinity-mc.ru'} target={'_blank'}>Карта</a>
+                        <a className={'header__item-link map'} href={'https://map.infinity-mc.ru'} target={'_blank'}>Карта</a>
                     </li>
                     |
                     <li className='header__item'>
-                        <a className={'header__item-link'} href={'https://docs.infinity-mc.ru'} target={'_blank'}>Документация</a>
+                        <a className={'header__item-link docs'} href={'https://docs.infinity-mc.ru'} target={'_blank'}>Документация</a>
                     </li>
                     |
                     <li className='header__item'>
-                        <a className={'header__item-link'} href={'/bans'}>Наказания</a>
+                        <a className={'header__item-link punishments'} href={'/bans?category=bans'}>Наказания</a>
                     </li>
                 </ul>
             </nav>

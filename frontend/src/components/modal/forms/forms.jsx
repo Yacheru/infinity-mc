@@ -1,90 +1,103 @@
-import data from "../../../../data.json";
-import React, {useState} from "react";
-// import axios from "axios";
-
-import Inputs from "./inputs.jsx";
+import React, {useEffect, useRef, useState} from "react";
 
 import './forms.css';
 import '../../../pages/pages.css'
+import data from "../../../../data.json";
+import axios from "axios";
 
-export default function Form({item}) {
-    const [activeIndex, setActiveIndex] = useState(null);
+export default function Form({ item }) {
+    const checkboxRef = useRef(null);
 
-    const [formData, setFormData] = useState({
-        nickname: '',
-        mail: '',
-        color: '',
-        badge: ''
-    });
+    const [nickname, setNickname] = useState('');
+    const [email, setEmail] = useState('');
+    const [checkbox, setCheckbox] = useState(true)
+    const [emailDirty, setEmailDirty] = useState(false);
+    const [nicknameDirty, setNicknameDirty] = useState(false);
+    const [nicknameError, setNicknameError] = useState('Поле никнейм не может быть пустым');
+    const [emailError, setEmailError] = useState('Поле почты не может быть пустым');
+    const [formValid, setFormValid] = useState(false)
+    const [duration, setDuration] = useState(0);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+    useEffect(() => {
+        if (emailError || nicknameError || checkbox) {
+            setFormValid(false)
+        } else {
+            setFormValid(true)
+        }
+    }, [emailError, nicknameError, checkbox])
+
+    const indexHandler = (i) => {
+        setDuration(i)
     }
-    const handleDurationClick = (index) => {setActiveIndex(index === activeIndex ? null : index)}
 
-    const handleGetForm = async () => {
-        const { nickname, mail, color, badge } = formData;
-        if (nickname === '') {
-            return alert('Введи никнейм!!!');
+    const emailHandler = (e) => {
+        setEmail(e.target.value)
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        if (!re.test(String(e.target.value).toLowerCase())) {
+            setEmailError('Почта введена некорректно')
+        } else {
+            setEmailError('')
         }
-        if (mail === '') {
-            return alert('Введи почту!!!');
+    }
+
+    const passwordHandler = (e) => {
+        setNickname(e.target.value)
+        if (e.target.value.length < 3) {
+            setNicknameError('Никнейм не может быть короче 3 символов')
+            if (!e.target.value ) {
+                setNicknameError('Поле никнейм не может быть пустым')
+            }
+        } else {
+            setNicknameError('')
         }
-        if (color === '') {
-            return alert('Введи цвет!!!');
+    }
+
+    const checkboxHandler = (e) => {
+        if (e.target.checked) {
+            setCheckbox(false)
+        } else {
+            setCheckbox(true)
         }
-        if (badge === '') {
-            return alert('Введи значок!!!');
+    }
+
+    const blurHandler = (e) => {
+        switch (e.target.name) {
+            case 'email':
+                return setEmailDirty(true)
+            case 'nickname':
+                return setNicknameDirty(true)
+        }
+    }
+
+    const submitForm = () => {
+        const amount = {
+            0: '169',
+            1: '369',
+            2: '690',
         }
 
-        // return alert(`${nicknameValue}, ${mailValue}, ${colorValue}, ${badgeValue}`)
-
-        //
-        // if (activeIndex !== null) {
-        //     let amount = "6900"
-        //     let donat = "hronon"
-        //     let color = "#ffffff"
-        //     let nickname = "yacheru"
-        //     const response = await axios.post(`http://localhost:8000/v1/mc/payments?amount=${amount}&donat=${donat}&color=${color}&nickname=${nickname}`)
-        //     return window.open(response.data['confirmation']['confirmation_url'])
-        // } else {
-        //     return console.log("Див не выбран");
-        // }
-    };
-
-    let costsLen = Object.keys(data[item].costs).length
+        try {
+            axios.get(`http://localhost:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`).then((res) => {
+                return window.open(res.data['confirmation']['confirmation_url'])
+            });
+        } catch (error) {
+            return console.error('Произошла ошибка при отправке формы:', error);
+        }
+    }
 
     return (
-        <form className={'modal__form'} action="">
+        <form className={'modal__form'}>
             <fieldset className={'modal__fieldset'}>
                 <label>
-                    <input
-                        className={'modal__input b'}
-                        name={'nickname'}
-                        type="text"
-                        onChange={handleChange}
-                        value={formData.nickname}
-                        placeholder={'Введите ваш никнейм'}
-                        id={'nickname'}
-                    />
-                    <input
-                        className={'modal__input b'}
-                        name={'mail'}
-                        type="text"
-                        onChange={handleChange}
-                        value={formData.mail}
-                        placeholder={'Введите вашу почту'}
-                        id={'mail'}
-                    />
-                    <Inputs item={item} handleChange={handleChange} colorValue={formData.color} badgeValue={formData.badge} />
+                    {( nicknameDirty && nicknameError ) && <div style={{ color: "red" }}>{ nicknameError }</div>}
+                    <input onChange={e => passwordHandler(e)} value={nickname} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'nickname'} type="text" placeholder={'Введите ваш никнейм'} id={'nickname'}/>
+                    {( emailDirty && emailError ) && <div style={{ color: "red" }}>{ emailError }</div>}
+                    <input onChange={e => emailHandler(e)} value={email} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'email'} type="text" placeholder={'Введите вашу почту'} id={'email'}/>
                 </label>
             </fieldset>
             <div className={'modal__durations flex'}>
-                {Array.from({length: costsLen}, (_, i) => (
-                    <div
-                        className={`modal__duration flex bgc-1 b br10 ${activeIndex === i || costsLen === 1 ? 'duration-active' : ''}`}
-                        key={i} onClick={() => handleDurationClick(i)}>
+                {Array.from({length: Object.keys(data[item].costs).length}, (_, i) => (
+                    <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`} key={i} onClick={() => indexHandler(i)}>
                         <div className={`modal__duration-checkbox`}></div>
                         <div className={'modal__duration-text flex'}>
                             <p>{ data[item].costs[`${i + 1}`][1] }</p>
@@ -95,11 +108,11 @@ export default function Form({item}) {
                 ))}
             </div>
             <div className={'modal__navbuy flex'}>
-                <button className={'modal__navbuy-button bgc-1 b br10'} onClick={handleGetForm} type={'button'}>Продолжить</button>
+                <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={submitForm}>Продолжить</button>
                 <div className={'modal__checkbox-box flex'}>
                     <div className={'modal__checkbox-item'}>
-                        <label className={'modal__checkbox-label flex'} htmlFor="checkbox">
-                            <input type="checkbox" id={'checkbox'}/>
+                        <label className={'modal__checkbox-label flex'} htmlFor={'checkbox'}>
+                            <input onClick={e => checkboxHandler(e)} ref={checkboxRef} name={'checkbox'} type="checkbox" id={'checkbox'}/>
                         </label>
                     </div>
                     <p className={'modal__checkbox-text'}>

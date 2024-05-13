@@ -13,6 +13,7 @@
     margin-right: 5px;
     width: 33%;
     height: 50px;
+    transition: all .3s;
 }
 
 .modal__duration:last-child {
@@ -22,6 +23,18 @@
 .duration-active {
     border: 1px solid whitesmoke;
     background-color: transparent;
+    position: relative;
+}
+
+.duration-active:before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 12px;
+    left: 8px;
+    background: url("/check.svg");
+    z-index: 1;
 }
 
 .modal__duration-checkbox {
@@ -37,7 +50,6 @@
 .duration-active .modal__duration-checkbox  {
     background-color: whitesmoke;
 }
-
 
 .modal__duration-text {
     width: 90%;
@@ -55,11 +67,22 @@
     margin-top: 5px;
 }
 
+.modal__navbuy button[disabled] {
+    cursor: not-allowed;
+}
+
 .modal__navbuy-button {
     width: 33%;
     height: 50px;
     margin-right: 5px;
+    transition: all .3s;
 }
+
+.modal__navbuy-button:hover {
+    transform: scale(105%);
+    background: #151515;
+}
+
 
 .modal__checkbox-box {
     width: 66%;

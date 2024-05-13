@@ -3,7 +3,7 @@ package handler
 import "github.com/gin-gonic/gin"
 
 type errorResponse struct {
-	Message string `json:"message"`
+	Message string `json:"error"`
 }
 
 type statusResponse struct {

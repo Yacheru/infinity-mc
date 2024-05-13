@@ -7,6 +7,29 @@
 .category-box-item {
     width: 50%;
     cursor: pointer;
+    position: relative;
+    transition: all .3s
+}
+
+.category-box-item:hover {
+    background: #151515;
+}
+
+.selected {
+    border-color: white;
+    color: #fff;
+}
+
+.selected.category-bans path  {
+    fill: #f11313;
+}
+
+.selected.category-mutes path  {
+    fill: #1361f1;
+}
+
+.selected.category-warns path  {
+    fill: #f1cc13;
 }
 
 .category-box-item:first-child {
