@@ -30,25 +30,29 @@ export default function Form({ item }) {
         setDuration(i)
     }
 
+    const nicknameHandler = (e) => {
+        setNickname(e.target.value)
+        if (e.target.value.length < 3) {
+            setNicknameError('Никнейм не может быть короче 3 символов')
+            if (!e.target.value) {
+                setNicknameError('Поле никнейм не может быть пустым')
+            }
+            e.target.classList.add('required')
+        } else {
+            e.target.classList.remove('required')
+            setNicknameError('')
+        }
+    }
+
     const emailHandler = (e) => {
         setEmail(e.target.value)
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if (!re.test(String(e.target.value).toLowerCase())) {
             setEmailError('Почта введена некорректно')
+            e.target.classList.add('required')
         } else {
+            e.target.classList.remove('required')
             setEmailError('')
-        }
-    }
-
-    const passwordHandler = (e) => {
-        setNickname(e.target.value)
-        if (e.target.value.length < 3) {
-            setNicknameError('Никнейм не может быть короче 3 символов')
-            if (!e.target.value ) {
-                setNicknameError('Поле никнейм не может быть пустым')
-            }
-        } else {
-            setNicknameError('')
         }
     }
 
@@ -90,7 +94,7 @@ export default function Form({ item }) {
             <fieldset className={'modal__fieldset'}>
                 <label>
                     {( nicknameDirty && nicknameError ) && <div style={{ color: "red" }}>{ nicknameError }</div>}
-                    <input onChange={e => passwordHandler(e)} value={nickname} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'nickname'} type="text" placeholder={'Введите ваш никнейм'} id={'nickname'}/>
+                    <input onChange={e => nicknameHandler(e)} value={nickname} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'nickname'} type="text" placeholder={'Введите ваш никнейм'} id={'nickname'}/>
                     {( emailDirty && emailError ) && <div style={{ color: "red" }}>{ emailError }</div>}
                     <input onChange={e => emailHandler(e)} value={email} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'email'} type="text" placeholder={'Введите вашу почту'} id={'email'}/>
                 </label>

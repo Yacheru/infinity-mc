@@ -6,6 +6,14 @@
     box-sizing: border-box;
 }
 
+.required {
+    border-color: #f11313;
+}
+
+.modal__durations {
+    margin-top: 10px;
+}
+
 .modal__duration {
     cursor: pointer;
     justify-content: flex-start;

@@ -22,6 +22,10 @@ export default function Header() {
                     <li className='header__item'>
                         <a className={'header__item-link punishments'} href={'/bans?category=bans'}>Наказания</a>
                     </li>
+                    |
+                    <li className='header__item'>
+                        <a className={'header__item-link punishments'} href={'/stats'}>Статистика</a>
+                    </li>
                 </ul>
             </nav>
         </header>

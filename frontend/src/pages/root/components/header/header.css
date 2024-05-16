@@ -21,11 +21,7 @@
 }
 
 .header__items {
-    justify-content: center;
-}
-
-.header__item {
-    margin: 0 30px 0 30px;
+    justify-content: space-evenly;
 }
 
 .header__item:first-child {

@@ -21,7 +21,7 @@ export default function Modal({active, setActive, modalType, item}) {
 
     return (
         <div className={active ? "modal flex center active" : "modal flex center"} onClick={() => setActive(false)}>
-            <div className={active ? "modal__content active" : "modal__content"} onClick={e => e.stopPropagation()}>
+            <div className={active ? "modal__content bgc-2 b active" : "modal__content b"} onClick={e => e.stopPropagation()}>
                 {modalContent}
             </div>
         </div>

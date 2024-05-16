@@ -19,7 +19,6 @@
 .modal__content {
     padding: 20px;
     border-radius: 12px;
-    background-color: #1a1a1a;
     width: 670px;
     transform: scale(0.5);
     transition: all .4s;
@@ -35,5 +34,5 @@
 }
 
 .modal__hr {
-    margin: 5px 0 10px 0;
+    margin: 10px 0 10px 0;
 }
