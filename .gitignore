@@ -1,7 +1,10 @@
+data
+
 # FRONTEND
 frontend/node_modules/
 frontend/pages/bans/
+frontend/config.json
 
 # BACKEND
 backend/configs/*.yml
-backend/build/*.exe
+backend/build/

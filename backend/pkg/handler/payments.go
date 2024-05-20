@@ -22,7 +22,7 @@ const (
 // SetHeaders Устанавливаем заголовки для api запроса
 func SetHeaders(r *http.Request) *http.Request {
 	if err := configs.InitConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err.Error())
+		log.Fatalf("Error reading config.json file, %s", err.Error())
 	}
 
 	key := uuid.NewString()

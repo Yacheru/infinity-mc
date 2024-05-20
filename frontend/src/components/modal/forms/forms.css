@@ -1,9 +1,38 @@
 .modal__input {
     width: 100%;
     margin: 5px 0 5px 0;
-    padding: 12px 20px;
+    padding: 12px 50px;
     border-radius: 10px;
     box-sizing: border-box;
+    position: relative;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-container.nickname:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 28px;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background: url("/root/username.svg");
+    z-index: 1;
+}
+
+.input-container.email:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 28px;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background: url("/root/email.svg");
+    z-index: 1;
 }
 
 .required {

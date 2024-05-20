@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import './forms.css';
 import '../../../pages/pages.css'
 import data from "../../../../data.json";
+import cfg from "../../../../config.json";
 import axios from "axios";
 
 export default function Form({ item }) {
@@ -80,8 +81,12 @@ export default function Form({ item }) {
             2: '690',
         }
 
+        const config = {
+            headers: { Authorization: `${ cfg['api'] }` }
+        };
+
         try {
-            axios.get(`http://localhost:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`).then((res) => {
+            axios.get(`https://api.infinity-mc.ru:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`, config).then((res) => {
                 return window.open(res.data['confirmation']['confirmation_url'])
             });
         } catch (error) {
@@ -93,15 +98,20 @@ export default function Form({ item }) {
         <form className={'modal__form'}>
             <fieldset className={'modal__fieldset'}>
                 <label>
-                    {( nicknameDirty && nicknameError ) && <div style={{ color: "red" }}>{ nicknameError }</div>}
-                    <input onChange={e => nicknameHandler(e)} value={nickname} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'nickname'} type="text" placeholder={'Введите ваш никнейм'} id={'nickname'}/>
-                    {( emailDirty && emailError ) && <div style={{ color: "red" }}>{ emailError }</div>}
-                    <input onChange={e => emailHandler(e)} value={email} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'email'} type="text" placeholder={'Введите вашу почту'} id={'email'}/>
+                    {(nicknameDirty && nicknameError) && <div style={{color: "red"}}>{nicknameError}</div>}
+                    <div className={'input-container nickname'}>
+                        <input onChange={e => nicknameHandler(e)} value={nickname} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'nickname'} type="text" placeholder={'Введите ваш никнейм'} id={'nickname'}/>
+                    </div>
+                    {(emailDirty && emailError) && <div style={{color: "red"}}>{emailError}</div>}
+                    <div className={'input-container email'}>
+                        <input onChange={e => emailHandler(e)} value={email} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'email'} type="text" placeholder={'Введите вашу почту'} id={'email'}/>
+                    </div>
                 </label>
             </fieldset>
             <div className={'modal__durations flex'}>
-                {Array.from({length: Object.keys(data[item].costs).length}, (_, i) => (
-                    <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`} key={i} onClick={() => indexHandler(i)}>
+            {Array.from({length: Object.keys(data[item].costs).length}, (_, i) => (
+                    <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`}
+                         key={i} onClick={() => indexHandler(i)}>
                         <div className={`modal__duration-checkbox`}></div>
                         <div className={'modal__duration-text flex'}>
                             <p>{ data[item].costs[`${i + 1}`][1] }</p>

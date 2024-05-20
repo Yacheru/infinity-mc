@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 	"github.com/yacheru/infinity-mc.ru/backend"
@@ -9,12 +10,14 @@ import (
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
-// main запускаем api
 func main() {
 	if err := configs.InitConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err.Error())
+		log.Fatalf("Error reading config.json file, %s", err.Error())
 	}
 
 	db, err := repository.NewDatabaseDB(repository.Config{
@@ -35,8 +38,26 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(backend.Server)
-	if err := srv.Run("8000", handlers.InitRoutes()); err != nil {
-		log.Fatalf("error occured while running http server: %s", err.Error())
+
+	go func() {
+		if err := srv.Run(viper.GetString("api.port"), handlers.InitRoutes()); err != nil {
+			log.Fatalf("error occured while running http server: %s", err.Error())
+		}
+	}()
+
+	log.Printf("Listening on port %s", viper.GetString("api.port"))
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	log.Println("Shutting down server...")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		log.Fatalf("error occured while shutting down server, %s", err.Error())
 	}
 
+	if err := db.Close(); err != nil {
+		log.Fatalf("error occured while closing database, %s", err.Error())
+	}
 }

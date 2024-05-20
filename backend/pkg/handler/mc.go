@@ -12,7 +12,7 @@ import (
 
 func InitRCON() *rcon.Conn {
 	if err := configs.InitConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err.Error())
+		log.Fatalf("Error reading config.json file, %s", err.Error())
 	}
 
 	ip := viper.GetString("rcon.ip")
@@ -28,10 +28,11 @@ func InitRCON() *rcon.Conn {
 }
 
 func (h *Handler) Mc(c *gin.Context) {
-	rcon := InitRCON()
-	defer rcon.Close()
 
-	response, err := rcon.Execute("op yacheru")
+	rconn := InitRCON()
+	defer rconn.Close()
+
+	response, err := rconn.Execute("op yacheru")
 	if err != nil {
 		log.Fatal(err)
 	}
