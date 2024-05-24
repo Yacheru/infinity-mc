@@ -2,23 +2,26 @@ package main
 
 import (
 	"context"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
 	"github.com/yacheru/infinity-mc.ru/backend"
-	"github.com/yacheru/infinity-mc.ru/backend/configs"
+	"github.com/yacheru/infinity-mc.ru/backend/init/config"
+	"github.com/yacheru/infinity-mc.ru/backend/init/logger"
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/handler"
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 func main() {
-	if err := configs.InitConfig(); err != nil {
-		log.Fatalf("Error reading config.json file, %s", err.Error())
+	if err := config.InitConfig(); err != nil {
+		fmt.Printf("Error reading config.json file, %s", err.Error())
 	}
+
+	log := logger.SetupLogger(viper.GetString("status"))
 
 	db, err := repository.NewDatabaseDB(repository.Config{
 		Host:    viper.GetString("db.mdb.host"),
@@ -30,7 +33,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Fatalf("Error connecting to database, %s", err.Error())
+		log.Error("Error connecting to database", err.Error())
 	}
 
 	repo := repository.NewRepository(db)
@@ -40,24 +43,24 @@ func main() {
 	srv := new(backend.Server)
 
 	go func() {
-		if err := srv.Run(viper.GetString("api.port"), handlers.InitRoutes()); err != nil {
-			log.Fatalf("error occured while running http server: %s", err.Error())
+		if err := srv.Run(viper.GetString("api.port"), handlers.InitRoutes(log)); err != nil {
+			log.Error("error occured while running http server: %s", err.Error())
 		}
 	}()
 
-	log.Printf("Listening on port %s", viper.GetString("api.port"))
+	log.Info("Listening on port " + viper.GetString("api.port"))
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
-	log.Println("Shutting down server...")
+	log.Info("Shutting down server...")
 
 	if err := srv.Shutdown(context.Background()); err != nil {
-		log.Fatalf("error occured while shutting down server, %s", err.Error())
+		log.Error("error occurred while shutting down server, " + err.Error())
 	}
 
 	if err := db.Close(); err != nil {
-		log.Fatalf("error occured while closing database, %s", err.Error())
+		log.Error("error occurred while closing database, " + err.Error())
 	}
 }

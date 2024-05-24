@@ -1,76 +1,39 @@
 package handler
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/spf13/viper"
-	"github.com/yacheru/infinity-mc.ru/backend"
-	"github.com/yacheru/infinity-mc.ru/backend/configs"
-	"io"
-	"log"
+	httpClient "github.com/yacheru/infinity-mc.ru/backend/internal/http-client"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/payments"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
-
-const (
-	endpoint  = "https://api.yookassa.ru/v3/payments/"
-	returnUrl = "https://infinity-mc.ru/"
-)
-
-// SetHeaders Устанавливаем заголовки для api запроса
-func SetHeaders(r *http.Request) *http.Request {
-	if err := configs.InitConfig(); err != nil {
-		log.Fatalf("Error reading config.json file, %s", err.Error())
-	}
-
-	key := uuid.NewString()
-
-	r.Header.Set("Content-Type", "application/json")
-	r.Header.Set("Authorization", viper.GetString("ykassa.pass"))
-	r.Header.Set("Idempotence-Key", key)
-
-	return r
-}
 
 func (h *Handler) CreatePayment(c *gin.Context) {
 	nickname := c.Query("nickname")
-	email := c.Query("email")
 	amount := c.Query("amount")
-	donatType := c.Query("donat")
-	description := fmt.Sprintf("Услуга: %s\nНикнейм: %s\nПочта: %s", donatType, nickname, email)
+	email := c.Query("email")
+	donat := c.Query("donat")
 
-	payment := backend.PaymentStruct{
-		Amount: backend.AmountType{
+	yooClient := httpClient.NewClient(viper.GetString("ykassa.shopid"), viper.GetString("ykassa.pass"))
+
+	pH := httpClient.NewPaymentHandler(yooClient)
+
+	payment, _ := pH.CreatePayment(&payments.Payment{
+		Amount: &payments.Amount{
 			Value:    amount,
 			Currency: "RUB",
 		},
-		Receipt: struct {
-			Customer struct {
-				Email string `json:"email"`
-			} `json:"customer"`
-			Items [1]struct {
-				Description string             `json:"description"`
-				Amount      backend.AmountType `json:"amount"`
-				VatCode     int                `json:"vat_code"`
-				Quantity    string             `json:"quantity"`
-			} `json:"items"`
-		}{
-			Customer: struct {
-				Email string `json:"email"`
-			}{
+		PaymentMethod: payments.PaymentMethodType("bank_card"),
+		Receipt: &payments.Receipt{
+			Customer: &payments.Email{
 				Email: email,
 			},
-			Items: [1]struct {
-				Description string             `json:"description"`
-				Amount      backend.AmountType `json:"amount"`
-				VatCode     int                `json:"vat_code"`
-				Quantity    string             `json:"quantity"`
-			}{
+			Items: &[1]payments.Items{
 				{
-					Description: donatType,
-					Amount: backend.AmountType{
+					Description: fmt.Sprintf("Услуга %s", donat),
+					Amount: &payments.Amount{
 						Value:    amount,
 						Currency: "RUB",
 					},
@@ -80,40 +43,25 @@ func (h *Handler) CreatePayment(c *gin.Context) {
 			},
 		},
 		Capture: true,
-		Confirmation: struct {
-			Type      string `json:"type"`
-			ReturnUrl string `json:"return_url"`
-		}{
+		Confirmation: payments.Redirect{
 			Type:      "redirect",
-			ReturnUrl: returnUrl,
+			ReturnURL: "https://infinity-mc.ru/",
 		},
-		Description: description,
-	}
+		Description: fmt.Sprintf("%s %s %s", nickname, donat, amount),
+	})
 
-	params, _ := json.Marshal(payment)
+	c.JSON(http.StatusOK, payment)
+}
 
-	r, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(params))
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-	r = SetHeaders(r)
+func (h *Handler) Accept(c *gin.Context) {
+	var jsonData map[string]interface{}
 
-	client := &http.Client{}
-	response, err := client.Do(r)
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-	defer response.Body.Close()
-
-	var result map[string]interface{}
-	body, _ := io.ReadAll(response.Body)
-	err = json.Unmarshal(body, &result)
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+	if err := c.ShouldBindJSON(&jsonData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	fmt.Printf("Received webhook: %+v\n", jsonData)
+
+	return
 }

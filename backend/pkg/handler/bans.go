@@ -9,6 +9,7 @@ import (
 func (h *Handler) GetAllBans(c *gin.Context) {
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if err != nil {
+
 		newErrorResponse(c, http.StatusBadRequest, "invalid limit param")
 		return
 	}

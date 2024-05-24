@@ -1,35 +1,14 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/gorcon/rcon"
-	"github.com/spf13/viper"
-	"github.com/yacheru/infinity-mc.ru/backend/configs"
+	"github.com/yacheru/infinity-mc.ru/backend/init/rcon"
 	"log"
 	"net/http"
 )
 
-func InitRCON() *rcon.Conn {
-	if err := configs.InitConfig(); err != nil {
-		log.Fatalf("Error reading config.json file, %s", err.Error())
-	}
-
-	ip := viper.GetString("rcon.ip")
-	port := viper.GetString("rcon.port")
-	ipport := fmt.Sprintf("%s:%s", ip, port)
-
-	conn, err := rcon.Dial(ipport, viper.GetString("rcon.pass"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return conn
-}
-
 func (h *Handler) Mc(c *gin.Context) {
-
-	rconn := InitRCON()
+	rconn := rcon.InitRCON()
 	defer rconn.Close()
 
 	response, err := rconn.Execute("op yacheru")
@@ -37,5 +16,7 @@ func (h *Handler) Mc(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, map[string]string{
+		"response": response,
+	})
 }

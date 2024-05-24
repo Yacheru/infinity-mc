@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
+	"log/slog"
 	"time"
 )
 
@@ -15,18 +17,33 @@ func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
-func (h *Handler) InitRoutes() *gin.Engine {
+func (h *Handler) InitRoutes(log *slog.Logger) *gin.Engine {
+	gin.SetMode(viper.GetString("mode"))
 	router := gin.New()
+
+	log.Info("Working in " + viper.GetString("mode"))
+
+	var origin string
+	_ = origin
+	switch viper.GetString("status") {
+	case "local":
+		origin = "http://localhost:5173"
+	case "prod":
+		origin = "https://infinity-mc.ru/"
+	}
 
 	router.Use(cors.New(
 		cors.Config{
-			AllowMethods:    []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"},
-			AllowHeaders:    []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Idempotence-Key"},
+			//AllowOrigins: []string{origin},
+			AllowMethods:    []string{"GET", "POST"},
+			AllowHeaders:    []string{"Content-Length", "Content-Type", "Authorization", "Idempotence-Key"},
 			AllowAllOrigins: true,
 			MaxAge:          12 * time.Hour,
 		}))
 
-	api := router.Group("/v1", h.userIdentity)
+	api := router.Group("/v1", gin.BasicAuth(gin.Accounts{
+		viper.GetString("api.user"): viper.GetString("api.pass"),
+	}))
 	{
 		mc := api.Group("/mc")
 		{
@@ -36,6 +53,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		payment := api.Group("/payment")
 		{
 			payment.GET("/", h.CreatePayment)
+			payment.POST("/accept", h.Accept)
 		}
 	}
 	return router
