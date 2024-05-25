@@ -87,7 +87,7 @@ export default function Form({ item }) {
                 url = `http://localhost:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
                 break
             case 'prod':
-                url = `https://api.infinity-mc.ru:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
+                url = `https://api.infinity-mc.ru/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
                 break
         }
 
