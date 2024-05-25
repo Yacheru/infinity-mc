@@ -1,8 +1,8 @@
 package payments
 
 type Receipt struct {
-	Customer *Email    `json:"customer,omitempty"`
-	Items    *[1]Items `json:"items,omitempty"`
+	Customer *Email   `json:"customer,omitempty"`
+	Items    *[]Items `json:"items,omitempty"`
 }
 
 type Items struct {

@@ -30,7 +30,7 @@ func (h *Handler) CreatePayment(c *gin.Context) {
 			Customer: &payments.Email{
 				Email: email,
 			},
-			Items: &[1]payments.Items{
+			Items: &[]payments.Items{
 				{
 					Description: fmt.Sprintf("Услуга %s", donat),
 					Amount: &payments.Amount{

@@ -18,7 +18,7 @@ import (
 
 func main() {
 	if err := config.InitConfig(); err != nil {
-		fmt.Printf("Error reading config.json file, %s", err.Error())
+		fmt.Printf("Error reading config file, %s", err.Error())
 	}
 
 	log := logger.SetupLogger(viper.GetString("status"))
@@ -43,8 +43,8 @@ func main() {
 	srv := new(backend.Server)
 
 	go func() {
-		if err := srv.Run(viper.GetString("api.port"), handlers.InitRoutes(log)); err != nil {
-			log.Error("error occured while running http server: %s", err.Error())
+		if err = srv.Run(viper.GetString("api.port"), handlers.InitRoutes(log)); err != nil {
+			log.Error("error occurred while running http server: %s", err.Error())
 		}
 	}()
 
@@ -56,11 +56,11 @@ func main() {
 
 	log.Info("Shutting down server...")
 
-	if err := srv.Shutdown(context.Background()); err != nil {
+	if err = srv.Shutdown(context.Background()); err != nil {
 		log.Error("error occurred while shutting down server, " + err.Error())
 	}
 
-	if err := db.Close(); err != nil {
+	if err = db.Close(); err != nil {
 		log.Error("error occurred while closing database, " + err.Error())
 	}
 }

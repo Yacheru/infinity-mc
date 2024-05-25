@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/yacheru/infinity-mc.ru/backend"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/mc"
 )
 
 type McMsql struct {
@@ -14,14 +14,14 @@ func NewMcMsql(db *sqlx.DB) *McMsql {
 	return &McMsql{db: db}
 }
 
-func (mc *McMsql) GetAllBans(limit int) ([]backend.LbPunishments, error) {
-	var bans []backend.LbPunishments
+func (mcMsql *McMsql) GetAllBans(limit int) ([]mc.LbPunishments, error) {
+	var bans []mc.LbPunishments
+	_ = bans
 
-	// TODO //
 	query := fmt.Sprintf(`
-		
+	
 	`, lbPunishments, lbHistory, lbVictims, lbNames)
-	err := mc.db.Select(&bans, query, limit)
+	err := mcMsql.db.Select(&bans, query, limit)
 
 	return bans, err
 }

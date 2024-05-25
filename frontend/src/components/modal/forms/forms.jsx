@@ -74,24 +74,31 @@ export default function Form({ item }) {
         }
     }
 
-    const submitForm = () => {
+    const submitForm = (e) => {
         const amount = {
             0: '169',
             1: '369',
             2: '690',
         }
+        let url
 
-        const config = {
-            headers: { Authorization: `${ cfg['api'] }` }
-        };
-
-        try {
-            axios.get(`https://api.infinity-mc.ru:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`, config).then((res) => {
-                return window.open(res.data['confirmation']['confirmation_url'])
-            });
-        } catch (error) {
-            return console.error('Произошла ошибка при отправке формы:', error);
+        switch (cfg['status']) {
+            case 'local':
+                url = `http://localhost:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
+                break
+            case 'prod':
+                url = `https://api.infinity-mc.ru:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
+                break
         }
+
+        axios.get(url, {
+            auth: {
+                username: cfg['user'],
+                password: cfg['pass']
+            }
+        }).then((res) => {
+            return window.open(res.data['confirmation']['confirmation_url'])
+        });
     }
 
     return (
@@ -122,7 +129,7 @@ export default function Form({ item }) {
                 ))}
             </div>
             <div className={'modal__navbuy flex'}>
-                <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={submitForm}>Продолжить</button>
+                <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={e => submitForm(e)}>Продолжить</button>
                 <div className={'modal__checkbox-box flex'}>
                     <div className={'modal__checkbox-item'}>
                         <label className={'modal__checkbox-label flex'} htmlFor={'checkbox'}>

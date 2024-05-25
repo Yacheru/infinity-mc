@@ -2,11 +2,11 @@ package repository
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/yacheru/infinity-mc.ru/backend"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/mc"
 )
 
 type McBans interface {
-	GetAllBans(limit int) ([]backend.LbPunishments, error)
+	GetAllBans(limit int) ([]mc.LbPunishments, error)
 }
 
 type Repository struct {
