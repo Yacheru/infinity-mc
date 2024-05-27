@@ -9,12 +9,18 @@ type McBans interface {
 	GetAllBans(limit int) ([]mc.LbPunishments, error)
 }
 
-type Repository struct {
-	McBans
+type Payments interface {
+	AddActivePayment(paymentId string) error
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+type Repository struct {
+	McBans
+	Payments
+}
+
+func NewRepository(mySQL, pSQL *sqlx.DB) *Repository {
 	return &Repository{
-		McBans: NewMcMsql(db),
+		McBans:   NewMcMySQL(mySQL),
+		Payments: NewPaymentsPSQL(pSQL),
 	}
 }

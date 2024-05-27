@@ -3,9 +3,9 @@ package handler
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
-	"log/slog"
 	"time"
 )
 
@@ -17,11 +17,11 @@ func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
-func (h *Handler) InitRoutes(log *slog.Logger) *gin.Engine {
+func (h *Handler) InitRoutes() *gin.Engine {
 	gin.SetMode(viper.GetString("mode"))
 	router := gin.New()
 
-	log.Info("Working in " + viper.GetString("mode"))
+	logrus.Infof("Working in %s", viper.GetString("mode"))
 
 	var origin string
 	_ = origin
@@ -36,14 +36,12 @@ func (h *Handler) InitRoutes(log *slog.Logger) *gin.Engine {
 		cors.Config{
 			//AllowOrigins: []string{origin},
 			AllowMethods:    []string{"GET", "POST"},
-			AllowHeaders:    []string{"Content-Length", "Content-Type", "Authorization", "Idempotence-Key"},
+			AllowHeaders:    []string{"X-Forwarded-For", "Content-Length", "Content-Type", "Authorization", "Idempotence-Key"},
 			AllowAllOrigins: true,
 			MaxAge:          12 * time.Hour,
 		}))
 
-	api := router.Group("/v1", gin.BasicAuth(gin.Accounts{
-		viper.GetString("api.user"): viper.GetString("api.pass"),
-	}))
+	api := router.Group("/v1")
 	{
 		mc := api.Group("/mc")
 		{

@@ -3,8 +3,8 @@ package rcon
 import (
 	"fmt"
 	"github.com/gorcon/rcon"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"log"
 )
 
 func InitRCON() *rcon.Conn {
@@ -14,7 +14,7 @@ func InitRCON() *rcon.Conn {
 
 	connect, err := rcon.Dial(ipport, viper.GetString("rcon.pass"))
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatalf("Error creating rcon connection, %s", err.Error())
 	}
 
 	return connect

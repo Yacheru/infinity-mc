@@ -6,22 +6,22 @@ import (
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/mc"
 )
 
-type McMsql struct {
+type McMySQL struct {
 	db *sqlx.DB
 }
 
-func NewMcMsql(db *sqlx.DB) *McMsql {
-	return &McMsql{db: db}
+func NewMcMySQL(db *sqlx.DB) *McMySQL {
+	return &McMySQL{db: db}
 }
 
-func (mcMsql *McMsql) GetAllBans(limit int) ([]mc.LbPunishments, error) {
+func (mcMSQL *McMySQL) GetAllBans(limit int) ([]mc.LbPunishments, error) {
 	var bans []mc.LbPunishments
 	_ = bans
 
 	query := fmt.Sprintf(`
 	
 	`, lbPunishments, lbHistory, lbVictims, lbNames)
-	err := mcMsql.db.Select(&bans, query, limit)
+	err := mcMSQL.db.Select(&bans, query, limit)
 
 	return bans, err
 }

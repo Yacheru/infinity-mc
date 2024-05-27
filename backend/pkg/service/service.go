@@ -9,12 +9,18 @@ type McBans interface {
 	GetAllBans(limit int) ([]mc.LbPunishments, error)
 }
 
+type Payments interface {
+	AddActivePayment(paymentId string) error
+}
+
 type Service struct {
 	McBans
+	Payments
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		McBans: NewMcBansService(repo.McBans),
+		McBans:   NewMcBansService(repo.McBans),
+		Payments: NewPaymentsService(repo.Payments),
 	}
 }

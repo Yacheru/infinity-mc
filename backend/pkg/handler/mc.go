@@ -8,10 +8,10 @@ import (
 )
 
 func (h *Handler) Mc(c *gin.Context) {
-	rconn := rcon.InitRCON()
-	defer rconn.Close()
+	rcon := rcon.InitRCON()
+	defer rcon.Close()
 
-	response, err := rconn.Execute("op yacheru")
+	response, err := rcon.Execute("op yacheru")
 	if err != nil {
 		log.Fatal(err)
 	}
