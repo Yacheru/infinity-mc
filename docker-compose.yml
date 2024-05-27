@@ -27,7 +27,7 @@ services:
     container_name: backend
     build: backend
     expose:
-      - 443
+      - "443"
     command: ./build/go_build_main_go.exe
     labels:
       - "traefik.enable=true"
@@ -41,7 +41,13 @@ services:
     container_name: api_db
     image: postgres:alpine3.20
     expose:
-      - 5432
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - ./backend/configs/db.env
 
   frontend:
     container_name: frontend

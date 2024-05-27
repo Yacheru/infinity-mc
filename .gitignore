@@ -11,7 +11,9 @@ dist-ssr
 
 # BACKEND
 backend/configs/*.yml
-backend/build/
+backend/configs/db.env
+backend/build
+backend/schema
 
 # Logs
 logs
@@ -26,6 +28,7 @@ lerna-debug.log*
 .vscode/*
 !.vscode/extensions.json
 .idea
+.env
 .DS_Store
 *.suo
 *.ntvs*
