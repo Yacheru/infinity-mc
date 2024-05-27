@@ -84,7 +84,7 @@ export default function Form({ item }) {
 
         switch (cfg['status']) {
             case 'local':
-                url = `http://localhost:8000/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
+                url = `http://localhost/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
                 break
             case 'prod':
                 url = `https://api.infinity-mc.ru/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`

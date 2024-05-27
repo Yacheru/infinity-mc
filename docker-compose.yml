@@ -39,7 +39,7 @@ services:
 
   api_db:
     container_name: api_db
-    build: postgres:alpine3.20
+    image: postgres:alpine3.20
     expose:
       - 5432
 
