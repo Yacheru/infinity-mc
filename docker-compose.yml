@@ -50,7 +50,7 @@ services:
     env_file:
       - ./backend/configs/db.env
     volumes:
-      - ./backend/schema/20240525120727_init.down.sql/docker-entrypoint-initdb.d/20240525120727_init.down.sql
+      - ./backend/schema/20240525120727_init.up.sql/docker-entrypoint-initdb.d/20240525120727_init.up.sql
     depends_on:
       - api
 
