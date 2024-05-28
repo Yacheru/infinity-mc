@@ -34,11 +34,9 @@ services:
       - "traefik.http.routers.api.rule=Host(`api.infinity-mc.ru`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=myresolver"
-    depends_on:
-      - postgres
 
   postgres:
-    container_name: api_db
+    container_name: postgres
     image: postgres:alpine3.20
     ports:
       - "5432:5432"
@@ -53,6 +51,8 @@ services:
       - ./backend/configs/db.env
     volumes:
       - ./backend/schema/20240525120727_init.down.sql/docker-entrypoint-initdb.d/20240525120727_init.down.sql
+    depends_on:
+      - api
 
   frontend:
     container_name: frontend
