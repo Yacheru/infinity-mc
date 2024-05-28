@@ -12,8 +12,8 @@ dist-ssr
 # BACKEND
 backend/configs/*.yml
 backend/configs/db.env
+backend/schema/*.sql
 backend/build
-backend/schema
 
 # Logs
 logs
