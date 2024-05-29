@@ -9,7 +9,6 @@ import (
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/middleware"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/payments"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
 	"net/http"
 )
 
@@ -72,15 +71,6 @@ func (h *Handler) CreatePayment(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Payments.AddActivePayment(payment.ID)
-	if err != nil {
-		logrus.Errorf("error adding active payment: %s", err.Error())
-
-		response.NewErrorResponse(c, http.StatusInternalServerError, "error adding active payment", err.Error())
-
-		return
-	}
-
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"code":         http.StatusOK,
 		"message":      "success",
@@ -108,7 +98,7 @@ func (h *Handler) Accept(c *gin.Context) {
 		return
 	}
 
-	if err := service.GiveDonat(paid.Object.Metadata.DonatType, paid.Object.Metadata.Nickname, paid.Object.Metadata.Duration); err != nil {
+	if err := GiveDonat(paid.Object.Metadata.DonatType, paid.Object.Metadata.Nickname, paid.Object.Metadata.Duration); err != nil {
 		logrus.Errorf("error giving hronon: %s", err.Error())
 
 		response.NewErrorResponse(c, http.StatusInternalServerError, "error of donate delivery", err.Error())

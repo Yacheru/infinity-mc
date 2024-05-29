@@ -1,22 +1,20 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"github.com/yacheru/infinity-mc.ru/backend/init/rcon"
-	"log"
-	"net/http"
 )
 
-func (h *Handler) Mc(c *gin.Context) {
+func GiveDonat(donatType, nickname, duration string) error {
 	rcon := rcon.InitRCON()
 	defer rcon.Close()
 
-	response, err := rcon.Execute("op yacheru")
-	if err != nil {
-		log.Fatal(err)
-	}
+	command := fmt.Sprintf("lp user %s parent addtemp %s %smo", nickname, donatType, duration)
 
-	c.JSON(http.StatusOK, map[string]string{
-		"response": response,
-	})
+	_, err := rcon.Execute(command)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

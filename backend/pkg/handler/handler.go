@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	local = "local"
+	prod  = "prod"
+)
+
 type Handler struct {
 	services *service.Service
 }
@@ -25,9 +30,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	var origin string
 	switch viper.GetString("status") {
-	case "local":
+	case local:
 		origin = "http://localhost:5173"
-	case "prod":
+	case prod:
 		origin = "https://infinity-mc.ru/"
 	}
 	_ = origin
@@ -45,12 +50,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		mc := api.Group("/mc")
 		{
-			mc.GET("/", h.Mc)
 			mc.GET("/bans", h.GetAllBans)
 		}
 		payment := api.Group("/payment")
 		{
-			payment.POST("/", h.CreatePayment)
+			payment.GET("/", h.CreatePayment)
 			payment.POST("/accept", h.Accept)
 		}
 	}
