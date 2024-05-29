@@ -5,7 +5,6 @@ services:
     container_name: traefik
     image: traefik:v3.0
     command:
-      #- "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -14,7 +13,7 @@ services:
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email=amilohin274@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.email="
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
@@ -35,8 +34,7 @@ services:
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=myresolver"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
 
   postgres:
     container_name: postgres
@@ -54,11 +52,6 @@ services:
       - .db.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U JCd7Ye1Z" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   frontend:
     container_name: frontend

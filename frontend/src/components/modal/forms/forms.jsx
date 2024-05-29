@@ -99,7 +99,7 @@ export default function Form({ item }) {
                 break
         }
 
-        axios.get(url).then((res) => {
+        axios.post(url).then((res) => {
             return window.open(res.data['confirmation']['confirmation_url'])
         });
     }
