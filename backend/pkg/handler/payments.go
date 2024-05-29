@@ -6,23 +6,32 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	httpClient "github.com/yacheru/infinity-mc.ru/backend/internal/http-client"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/middleware"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/payments"
+	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
 	"net/http"
 )
 
 func (h *Handler) CreatePayment(c *gin.Context) {
-	nickname := c.Query("nickname")
-	amount := c.Query("amount")
-	email := c.Query("email")
-	donat := c.Query("donat")
+	nickname, price, email, donat, duration, ok := middleware.ValidateParams(
+		c.Query("nickname"), c.Query("price"), c.Query("email"), c.Query("donat"), c.Query("duration"),
+	)
+	if !ok {
+		logrus.Infof("invalid request parameters")
+
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid request parameters", "")
+
+		return
+	}
 
 	yooClient := httpClient.NewClient(viper.GetString("ykassa.shopid"), viper.GetString("ykassa.pass"))
 
 	pH := httpClient.NewPaymentHandler(yooClient)
 
-	payment, _ := pH.CreatePayment(&payments.Payment{
+	payment, err := pH.CreatePayment(&payments.Payment{
 		Amount: &payments.Amount{
-			Value:    amount,
+			Value:    price,
 			Currency: "RUB",
 		},
 		PaymentMethod: payments.PaymentMethodType("bank_card"),
@@ -34,7 +43,7 @@ func (h *Handler) CreatePayment(c *gin.Context) {
 				{
 					Description: fmt.Sprintf("Услуга %s", donat),
 					Amount: &payments.Amount{
-						Value:    amount,
+						Value:    price,
 						Currency: "RUB",
 					},
 					VatCode:  1,
@@ -42,69 +51,89 @@ func (h *Handler) CreatePayment(c *gin.Context) {
 				},
 			},
 		},
+		Metadata: &payments.Metadata{
+			Nickname:  nickname,
+			DonatType: donat,
+			Price:     price,
+			Duration:  duration,
+		},
 		Capture: true,
 		Confirmation: payments.Redirect{
 			Type:      "redirect",
 			ReturnURL: "https://infinity-mc.ru/",
 		},
-		Description: fmt.Sprintf("%s %s %s", nickname, donat, amount),
+		Description: fmt.Sprintf("Ваш никнейм: %s, Услуга: %s, Стоимость: %s", nickname, donat, price),
 	})
+	if err != nil {
+		logrus.Errorf("Failed to create payment: %s", err.Error())
 
-	err := h.services.Payments.AddActivePayment(payment.ID)
+		response.NewErrorResponse(c, http.StatusInternalServerError, "Failed to create payment", err.Error())
+
+		return
+	}
+
+	err = h.services.Payments.AddActivePayment(payment.ID)
 	if err != nil {
 		logrus.Errorf("error adding active payment: %s", err.Error())
 
-		c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"code":    http.StatusInternalServerError,
-			"message": "error adding active payment",
-		})
+		response.NewErrorResponse(c, http.StatusInternalServerError, "error adding active payment", err.Error())
 
 		return
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"code":    http.StatusOK,
-		"message": "success",
+		"code":         http.StatusOK,
+		"message":      "success",
+		"confirmation": payment.Confirmation,
 	})
+
 	return
 }
 
 func (h *Handler) Accept(c *gin.Context) {
-	//if ok := middleware.AllowedIps(c.ClientIP()); !ok {
-	//	logrus.Infof("%s not found in allowed ips", c.ClientIP())
-	//
-	//	c.JSON(http.StatusForbidden, map[string]interface{}{
-	//		"code":    http.StatusForbidden,
-	//		"message": "ip not found in allowed ips",
-	//	})
-	//
-	//	return
-	//}
+	if ok := middleware.AllowedIps(c.ClientIP()); !ok {
+		logrus.Infof("%s not found in allowed ips", c.ClientIP())
 
-	var jsonData map[string]interface{}
-	if err := c.ShouldBindJSON(&jsonData); err != nil {
-		logrus.Errorf("Invalid request body, %s", err.Error())
-
-		c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"code":    http.StatusBadRequest,
-			"message": "Invalid request body",
-		})
+		response.NewErrorResponse(c, http.StatusForbidden, "ip not found in allowed ips", "no provided")
 
 		return
 	}
 
-	//if err := service.GiveHronon("yacheru", "1"); err != nil {
-	//	logrus.Errorf("error giving hronon: %s", err.Error())
-	//
-	//	c.JSON(http.StatusInternalServerError, map[string]interface{}{
-	//		"code":    http.StatusInternalServerError,
-	//		"message": "error giving hronon",
-	//	})
-	//
-	//	return
-	//}
+	var paid = &payments.Paid{}
+	if err := c.ShouldBindJSON(&paid); err != nil {
+		logrus.Errorf("Invalid request body, %s", err.Error())
 
-	c.JSON(http.StatusOK, jsonData)
+		response.NewErrorResponse(c, http.StatusForbidden, "Invalid request body", err.Error())
+
+		return
+	}
+
+	if err := service.GiveDonat(paid.Object.Metadata.DonatType, paid.Object.Metadata.Nickname, paid.Object.Metadata.Duration); err != nil {
+		logrus.Errorf("error giving hronon: %s", err.Error())
+
+		response.NewErrorResponse(c, http.StatusInternalServerError, "error of donate delivery", err.Error())
+
+		return
+	}
+
+	if err := h.services.Payments.CreateHistory(
+		paid.Object.ID,
+		paid.Object.Metadata.Nickname,
+		paid.Object.Metadata.Price,
+		paid.Object.Metadata.DonatType,
+	); err != nil {
+		logrus.Errorf("error creating history: %s", err.Error())
+
+		response.NewErrorResponse(c, http.StatusInternalServerError, "error creating history", err.Error())
+
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"code":     http.StatusOK,
+		"message":  "success",
+		"metadata": paid.Object.Metadata,
+	})
 
 	return
 }

@@ -11,6 +11,7 @@ type McBans interface {
 
 type Payments interface {
 	AddActivePayment(paymentId string) error
+	CreateHistory(nickname, paymentId, price, donatType string) error
 }
 
 type Service struct {

@@ -75,28 +75,31 @@ export default function Form({ item }) {
     }
 
     const submitForm = (e) => {
-        const amount = {
+        const price = {
             0: '169',
             1: '369',
             2: '690',
         }
-        let url
 
+        let dur = '6'
+
+        if (price[duration] === '169' && item === 'hronon') {
+            dur = '1'
+        } else if (price[duration] === '369') {
+            dur = '3'
+        }
+
+        let url
         switch (cfg['status']) {
             case 'local':
-                url = `http://localhost/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
+                url = `http://localhost/v1/payment/?nickname=${nickname}&email=${email}&price=${price[duration]}&donat=${item}&duration=${dur}`
                 break
             case 'prod':
-                url = `https://api.infinity-mc.ru/v1/payment/?nickname=${nickname}&email=${email}&amount=${amount[duration]}&donat=${item}`
+                url = `https://api.infinity-mc.ru/v1/payment/?nickname=${nickname}&email=${email}&price=${price[duration]}&donat=${item}&duration=${dur}`
                 break
         }
 
-        axios.get(url, {
-            auth: {
-                username: cfg['user'],
-                password: cfg['pass']
-            }
-        }).then((res) => {
+        axios.get(url).then((res) => {
             return window.open(res.data['confirmation']['confirmation_url'])
         });
     }

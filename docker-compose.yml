@@ -13,8 +13,8 @@ services:
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email="
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=amilohin274@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
@@ -34,6 +34,9 @@ services:
       - "traefik.http.routers.api.rule=Host(`api.infinity-mc.ru`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=myresolver"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   postgres:
     container_name: postgres
@@ -48,11 +51,14 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
     env_file:
-      - ./backend/configs/db.env
+      - .db.env
     volumes:
-      - ./backend/schema/20240525120727_init.up.sql/docker-entrypoint-initdb.d/20240525120727_init.up.sql
-    depends_on:
-      - api
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U JCd7Ye1Z" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     container_name: frontend
@@ -62,3 +68,6 @@ services:
       - "traefik.http.routers.frontend.rule=Host(`infinity-mc.ru`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+
+volumes:
+  postgres_data:

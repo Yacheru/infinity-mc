@@ -24,19 +24,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	logrus.Infof("Working in %s", viper.GetString("mode"))
 
 	var origin string
-	_ = origin
 	switch viper.GetString("status") {
 	case "local":
 		origin = "http://localhost:5173"
 	case "prod":
 		origin = "https://infinity-mc.ru/"
 	}
+	_ = origin
 
 	router.Use(cors.New(
 		cors.Config{
 			//AllowOrigins: []string{origin},
 			AllowMethods:    []string{"GET", "POST"},
-			AllowHeaders:    []string{"X-Forwarded-For", "Content-Length", "Content-Type", "Authorization", "Idempotence-Key"},
+			AllowHeaders:    []string{"X-Forwarded-For", "Content-Length", "Content-Type", "Idempotence-Key"},
 			AllowAllOrigins: true,
 			MaxAge:          12 * time.Hour,
 		}))
@@ -50,7 +50,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 		payment := api.Group("/payment")
 		{
-			payment.GET("/", h.CreatePayment)
+			payment.POST("/", h.CreatePayment)
 			payment.POST("/accept", h.Accept)
 		}
 	}

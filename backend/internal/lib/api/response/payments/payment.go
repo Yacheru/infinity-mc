@@ -20,7 +20,7 @@ type Payment struct {
 	Paid                 bool                  `json:"paid,omitempty"`
 	Refundable           bool                  `json:"refundable,omitempty"`
 	ReceiptRegistration  Status                `json:"receipt_registration,omitempty"`
-	Metadata             interface{}           `json:"metadata,omitempty"`
+	Metadata             *Metadata             `json:"metadata,omitempty"`
 	CancellationDetails  *CancellationDetails  `json:"cancellation_details,omitempty"`
 	AuthorizationDetails *AuthorizationDetails `json:"authorization_details,omitempty"`
 	Transfers            []Transfer            `json:"transfers,omitempty"`

@@ -15,3 +15,7 @@ func NewPaymentsService(repo repository.Payments) *PaymentsService {
 func (s *PaymentsService) AddActivePayment(paymentId string) error {
 	return s.repo.AddActivePayment(paymentId)
 }
+
+func (s *PaymentsService) CreateHistory(nickname, paymentId, price, donatType string) error {
+	return s.repo.CreateHistory(nickname, paymentId, price, donatType)
+}

@@ -5,11 +5,11 @@ import (
 	"github.com/yacheru/infinity-mc.ru/backend/init/rcon"
 )
 
-func GiveHronon(nickname, latency string) error {
+func GiveDonat(donatType, nickname, duration string) error {
 	rcon := rcon.InitRCON()
 	defer rcon.Close()
 
-	command := fmt.Sprintf("lp user %s parent addtemp Hronon %smo", nickname, latency)
+	command := fmt.Sprintf("lp user %s parent addtemp %s %smo", nickname, donatType, duration)
 
 	_, err := rcon.Execute(command)
 
