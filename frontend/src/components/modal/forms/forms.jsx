@@ -99,7 +99,7 @@ export default function Form({ item }) {
                 break
         }
 
-        axios.post(url).then((res) => {
+        axios.get(url).then((res) => {
             return window.open(res.data['confirmation']['confirmation_url'])
         });
     }
@@ -120,16 +120,15 @@ export default function Form({ item }) {
             </fieldset>
             <div className={'modal__durations flex'}>
             {Array.from({length: Object.keys(data[item].costs).length}, (_, i) => (
-                    <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`}
-                         key={i} onClick={() => indexHandler(i)}>
-                        <div className={`modal__duration-checkbox`}></div>
-                        <div className={'modal__duration-text flex'}>
-                            <p>{ data[item].costs[`${i + 1}`][1] }</p>
-                            <span>/</span>
-                            <p>{ data[item].costs[`${i + 1}`][0] }</p>
-                        </div>
+                <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`} key={i} onClick={() => indexHandler(i)}>
+                    <div className={`modal__duration-checkbox`}></div>
+                    <div className={'modal__duration-text flex'}>
+                        <p>{ data[item].costs[`${i + 1}`][1] }</p>
+                        <span>/</span>
+                        <p>{ data[item].costs[`${i + 1}`][0] }</p>
                     </div>
-                ))}
+                </div>
+            ))}
             </div>
             <div className={'modal__navbuy flex'}>
                 <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={e => submitForm(e)}>Продолжить</button>

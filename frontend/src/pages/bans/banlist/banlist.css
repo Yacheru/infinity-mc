@@ -18,8 +18,13 @@
 }
 
 .banlist-tr-item {
+    position: relative;
     width: 33%;
     margin-right: 50px;
+}
+
+.banlist-body__tr {
+    height: 32px;
 }
 
 .banlist-body__tr.no-push {
@@ -33,6 +38,12 @@
 
 .banlist-tr-item .forever {
     background: #f11313;
+    padding: 8px;
+}
+
+.banlist-tr-item .elapsed {
+    background: #13f117;
+    padding: 8px;
 }
 
 .banlist-tr-item:last-child {
@@ -40,8 +51,19 @@
 }
 
 .banlist-table__body {
+    padding-top: 10px;
     color: #fff;
     height: 100%;
     flex-direction: column;
-    justify-content: space-around;
+    gap: 4vh;
+}
+
+.player-head-left {
+    position: absolute;
+    left: 50px;
+}
+
+.player-head-right {
+    position: absolute;
+    right: 50px;
 }

@@ -1,16 +1,21 @@
-import axios from "axios";
-
 import {useEffect, useState} from "react";
 
-import './banlist.css'
 import BansBody from "./bansBody.jsx";
 import NoBans from "./noBans.jsx";
+import { useLocation } from "react-router-dom";
+
+import axios from "axios";
+
+import './banlist.css'
+
 
 export default function Banlist() {
-    const [punishments, setPunishments] = useState({});
+    const [punishments, setPunishments] = useState(null);
+    const location = useLocation()
+    let value = location.search.split('=')[1]
 
     useEffect(() => {
-        axios.get('http://localhost:8000/v1/mc/bans?limit=10')
+        axios.get(`http://localhost/v1/mc/punishments?limit=10&type=${value}`)
             .then(result => {
                 return setPunishments(result)
             });
@@ -27,7 +32,7 @@ export default function Banlist() {
                         <td className={'banlist-tr-item b bgc-2 br10 flex center'}>Администратор</td>
                     </tr>
                 </thead>
-                {punishments === 200 ? <BansBody punishments={punishments}/> : <NoBans />}
+                {punishments ? <BansBody punishments={punishments.data}/> : <NoBans location={location} />}
             </table>
         </main>
     )

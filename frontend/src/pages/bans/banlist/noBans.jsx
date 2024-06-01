@@ -1,7 +1,4 @@
-import { useLocation } from "react-router-dom";
-
-export default function NoBans() {
-    const location = useLocation()
+export default function NoBans({ location }) {
     const values = {
         'bans': 'банов',
         'mutes': 'мутов',
@@ -16,10 +13,10 @@ export default function NoBans() {
     }
 
     return (
-        <tbody className={'banlist-table__body no-push flex'}>
-        <tr className={'banlist-body__tr no-push flex'}>
-            <td className={'banlist-tr-item no-push flex center'}>{handleError()}</td>
-        </tr>
+        <tbody className={'banlist-table__body no-push flex center'}>
+            <tr className={'banlist-body__tr no-push flex'}>
+                <td className={'banlist-tr-item no-push flex center'}>{handleError()}</td>
+            </tr>
         </tbody>
     )
 }

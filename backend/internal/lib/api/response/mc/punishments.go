@@ -1,8 +1,9 @@
 package mc
 
 type LbPunishments struct {
-	Victim   *Victim   `json:"victim,omitempty"`
-	Reason   string    `json:"reason,omitempty"`
-	Time     *Time     `json:"time,omitempty"`
-	Operator *Operator `json:"operator,omitempty"`
+	ID       int      `json:"id" db:"-"`
+	Victim   Victim   `json:"victim" db:"victim"`
+	Reason   string   `json:"reason" db:"reason"`
+	Time     Time     `json:"time" db:"time"`
+	Operator Operator `json:"operator" db:"operator"`
 }

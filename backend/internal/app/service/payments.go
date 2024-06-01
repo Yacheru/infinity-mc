@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/repository"
 )
 
 type PaymentsService struct {

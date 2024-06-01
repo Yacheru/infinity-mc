@@ -6,7 +6,7 @@ import (
 )
 
 type McBans interface {
-	GetAllBans(limit int) ([]mc.LbPunishments, error)
+	GetPunishments(limit int, pType string) ([]mc.LbPunishments, error)
 }
 
 type Payments interface {

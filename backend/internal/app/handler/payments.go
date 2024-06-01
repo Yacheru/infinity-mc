@@ -6,23 +6,17 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	httpClient "github.com/yacheru/infinity-mc.ru/backend/internal/http-client"
-	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/middleware"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/payments"
 	"net/http"
 )
 
 func (h *Handler) CreatePayment(c *gin.Context) {
-	nickname, price, email, donat, duration, ok := middleware.ValidateParams(
-		c.Query("nickname"), c.Query("price"), c.Query("email"), c.Query("donat"), c.Query("duration"),
-	)
-	if !ok {
-		logrus.Infof("invalid request parameters")
-
-		response.NewErrorResponse(c, http.StatusBadRequest, "invalid request parameters", "")
-
-		return
-	}
+	price := c.Query("price")
+	email := c.Query("email")
+	donat := c.Query("donat")
+	nickname := c.Query("nickname")
+	duration := c.Query("duration")
 
 	yooClient := httpClient.NewClient(viper.GetString("ykassa.shopid"), viper.GetString("ykassa.pass"))
 
@@ -81,14 +75,6 @@ func (h *Handler) CreatePayment(c *gin.Context) {
 }
 
 func (h *Handler) Accept(c *gin.Context) {
-	if ok := middleware.AllowedIps(c.ClientIP()); !ok {
-		logrus.Infof("%s not found in allowed ips", c.ClientIP())
-
-		response.NewErrorResponse(c, http.StatusForbidden, "ip not found in allowed ips", "no provided")
-
-		return
-	}
-
 	var paid = &payments.Paid{}
 	if err := c.ShouldBindJSON(&paid); err != nil {
 		logrus.Errorf("Invalid request body, %s", err.Error())

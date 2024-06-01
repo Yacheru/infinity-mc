@@ -4,7 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/repository"
 	"os"
 )
 

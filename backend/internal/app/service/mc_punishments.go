@@ -1,8 +1,8 @@
 package service
 
 import (
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/repository"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/mc"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
 )
 
 type McService struct {
@@ -13,6 +13,6 @@ func NewMcBansService(repo repository.McBans) *McService {
 	return &McService{repo: repo}
 }
 
-func (s *McService) GetAllBans(limit int) ([]mc.LbPunishments, error) {
-	return s.repo.GetAllBans(limit)
+func (s *McService) GetPunishments(limit int, pType string) ([]mc.LbPunishments, error) {
+	return s.repo.GetPunishments(limit, pType)
 }

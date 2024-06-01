@@ -6,11 +6,13 @@ import (
 )
 
 const (
-	lbPunishments = "libertybans_punishments"
-	lbBans        = "libertybans_bans"
-	lbVictims     = "libertybans_victims"
-	lbNames       = "libertybans_names"
-	lbHistory     = "libertybans_history"
+	LbPunishments = "libertybans_punishments"
+	LbBans        = "libertybans_bans"
+	LbMutes       = "libertybans_mutes"
+	LbWarns       = "libertybans_warns"
+	LbVictims     = "libertybans_victims"
+	LbNames       = "libertybans_names"
+	LbHistory     = "libertybans_history"
 )
 
 type Config struct {

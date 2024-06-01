@@ -1,12 +1,12 @@
 package service
 
 import (
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/repository"
 	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/response/mc"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
 )
 
 type McBans interface {
-	GetAllBans(limit int) ([]mc.LbPunishments, error)
+	GetPunishments(limit int, pType string) ([]mc.LbPunishments, error)
 }
 
 type Payments interface {

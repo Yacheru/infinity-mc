@@ -5,7 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/service"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/lib/api/middleware"
 	"time"
 )
 
@@ -45,17 +46,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			AllowAllOrigins: true,
 			MaxAge:          12 * time.Hour,
 		}))
+	router.Use(gin.Recovery())
 
 	api := router.Group("/v1")
 	{
 		mc := api.Group("/mc")
 		{
-			mc.GET("/bans", h.GetAllBans)
+			mc.GET("/punishments", middleware.ValidatePunishmentsParams(), h.GetPunishments)
 		}
 		payment := api.Group("/payment")
 		{
-			payment.GET("/", h.CreatePayment)
-			payment.POST("/accept", h.Accept)
+			payment.GET("/", middleware.ValidatePaymentParams(), h.CreatePayment)
+			payment.POST("/accept", middleware.AllowedIps(), h.Accept)
 		}
 	}
 	return router

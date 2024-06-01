@@ -9,9 +9,9 @@ import (
 	"github.com/yacheru/infinity-mc.ru/backend"
 	"github.com/yacheru/infinity-mc.ru/backend/init/config"
 	"github.com/yacheru/infinity-mc.ru/backend/init/databases"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/handler"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/repository"
-	"github.com/yacheru/infinity-mc.ru/backend/pkg/service"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/handler"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/repository"
+	"github.com/yacheru/infinity-mc.ru/backend/internal/app/service"
 	"os"
 	"os/signal"
 	"syscall"
@@ -32,7 +32,10 @@ func main() {
 	})
 	logrus.SetReportCaller(true)
 
-	_ = config.InitConfig()
+	err := config.InitConfig()
+	if err != nil {
+		logrus.Fatalf("failed to init config: %s", err.Error())
+	}
 
 	mysql, psql := databases.InitDatabases()
 

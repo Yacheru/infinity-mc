@@ -16,6 +16,10 @@
     position: relative;
 }
 
+.header-select {
+    color: whitesmoke;
+}
+
 .header__nav {
     width: 50%;
 }
