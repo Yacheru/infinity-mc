@@ -1,0 +1,21 @@
+.infinitymc {
+    color: whitesmoke;
+}
+
+.infinitymc-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    animation: fading 3s ease-in infinite;
+}
+
+@keyframes fading {
+    from {
+        color: whitesmoke;
+    }
+    50% {
+        color: transparent;
+    }
+    to {
+        color: whitesmoke;
+    }
+}

@@ -1,23 +1,28 @@
+import axios from "axios";
+
 import React, {useEffect, useRef, useState} from "react";
+import {useTranslation} from "react-i18next";
+
+import data from "../../../../data.json";
+import cfg from "../../../../config.json";
 
 import './forms.css';
 import '../../../pages/pages.css'
-import data from "../../../../data.json";
-import cfg from "../../../../config.json";
-import axios from "axios";
 
 export default function Form({ item }) {
-    const checkboxRef = useRef(null);
+    const { t } = useTranslation()
 
-    const [nickname, setNickname] = useState('');
-    const [email, setEmail] = useState('');
+    const checkboxRef = useRef(null)
+
+    const [nickname, setNickname] = useState('')
+    const [email, setEmail] = useState('')
     const [checkbox, setCheckbox] = useState(true)
-    const [emailDirty, setEmailDirty] = useState(false);
-    const [nicknameDirty, setNicknameDirty] = useState(false);
-    const [nicknameError, setNicknameError] = useState('Поле никнейм не может быть пустым');
-    const [emailError, setEmailError] = useState('Поле почты не может быть пустым');
+    const [emailDirty, setEmailDirty] = useState(false)
+    const [nicknameDirty, setNicknameDirty] = useState(false)
+    const [nicknameError, setNicknameError] = useState(t('components.forms.forms.nicknameErrors.empty'))
+    const [emailError, setEmailError] = useState(t('components.forms.forms.emailErrors.empty'))
     const [formValid, setFormValid] = useState(false)
-    const [duration, setDuration] = useState(0);
+    const [duration, setDuration] = useState(0)
 
     useEffect(() => {
         if (emailError || nicknameError || checkbox) {
@@ -27,16 +32,12 @@ export default function Form({ item }) {
         }
     }, [emailError, nicknameError, checkbox])
 
-    const indexHandler = (i) => {
-        setDuration(i)
-    }
-
     const nicknameHandler = (e) => {
         setNickname(e.target.value)
         if (e.target.value.length < 3) {
-            setNicknameError('Никнейм не может быть короче 3 символов')
+            setNicknameError(t('components.forms.forms.nicknameErrors.short'))
             if (!e.target.value) {
-                setNicknameError('Поле никнейм не может быть пустым')
+                setNicknameError(t('components.forms.forms.nicknameErrors.empty'))
             }
             e.target.classList.add('required')
         } else {
@@ -49,7 +50,7 @@ export default function Form({ item }) {
         setEmail(e.target.value)
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if (!re.test(String(e.target.value).toLowerCase())) {
-            setEmailError('Почта введена некорректно')
+            setEmailError(t('components.forms.forms.emailErrors.invalid'))
             e.target.classList.add('required')
         } else {
             e.target.classList.remove('required')
@@ -74,7 +75,7 @@ export default function Form({ item }) {
         }
     }
 
-    const submitForm = (e) => {
+    const submitForm = () => {
         const price = {
             0: '169',
             1: '369',
@@ -110,17 +111,32 @@ export default function Form({ item }) {
                 <label>
                     {(nicknameDirty && nicknameError) && <div style={{color: "red"}}>{nicknameError}</div>}
                     <div className={'input-container nickname'}>
-                        <input onChange={e => nicknameHandler(e)} value={nickname} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'nickname'} type="text" placeholder={'Введите ваш никнейм'} id={'nickname'}/>
+                        <input
+                            onChange={e => nicknameHandler(e)}
+                            value={nickname}
+                            onBlur={e => blurHandler(e)}
+                            className={'modal__input b w100'}
+                            name={'nickname'}
+                            type="text"
+                            placeholder={t('components.forms.forms.placeholders.nickname')}
+                            id={'nickname'}/>
                     </div>
                     {(emailDirty && emailError) && <div style={{color: "red"}}>{emailError}</div>}
                     <div className={'input-container email'}>
-                        <input onChange={e => emailHandler(e)} value={email} onBlur={e => blurHandler(e)} className={'modal__input b'} name={'email'} type="text" placeholder={'Введите вашу почту'} id={'email'}/>
+                        <input
+                            onChange={e => emailHandler(e)}
+                            value={email} onBlur={e => blurHandler(e)}
+                            className={'modal__input b w100'}
+                            name={'email'}
+                            type="text"
+                            placeholder={t('components.forms.forms.placeholders.email')}
+                            id={'email'}/>
                     </div>
                 </label>
             </fieldset>
             <div className={'modal__durations flex'}>
             {Array.from({length: Object.keys(data[item].costs).length}, (_, i) => (
-                <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`} key={i} onClick={() => indexHandler(i)}>
+                <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`} key={i} onClick={() => setDuration(i)}>
                     <div className={`modal__duration-checkbox`}></div>
                     <div className={'modal__duration-text flex'}>
                         <p>{ data[item].costs[`${i + 1}`][1] }</p>
@@ -134,13 +150,12 @@ export default function Form({ item }) {
                 <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={e => submitForm(e)}>Продолжить</button>
                 <div className={'modal__checkbox-box flex'}>
                     <div className={'modal__checkbox-item'}>
-                        <label className={'modal__checkbox-label flex'} htmlFor={'checkbox'}>
+                        <label className={'modal__checkbox-label flex h100'} htmlFor={'checkbox'}>
                             <input onClick={e => checkboxHandler(e)} ref={checkboxRef} name={'checkbox'} type="checkbox" id={'checkbox'}/>
                         </label>
                     </div>
                     <p className={'modal__checkbox-text'}>
-                        Я принимаю условия
-                        <a href="/terms" target={'_blank'}> пользовательского соглашения</a>
+                        Я принимаю условия <a href="/terms" target={'_blank'}> пользовательского соглашения</a>
                     </p>
                 </div>
             </div>

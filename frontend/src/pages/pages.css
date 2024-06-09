@@ -1,3 +1,7 @@
+.important {
+    color: #5865f2;
+}
+
 .bgc-1 {
     background-color: #101010;
 }
@@ -27,3 +31,18 @@
     justify-content: center;
 }
 
+.reverse {
+    flex-direction: row-reverse;
+}
+
+.pd-8 {
+    padding: 8px;
+}
+
+.h100 {
+    height: 100%;
+}
+
+.w100 {
+    width: 100%;
+}

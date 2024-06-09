@@ -1,5 +1,4 @@
 .modal__input {
-    width: 100%;
     margin: 5px 0 5px 0;
     padding: 12px 50px;
     border-radius: 10px;
@@ -100,7 +99,6 @@
 }
 
 .modal__navbuy {
-    width: 100%;
     margin-top: 5px;
 }
 
@@ -128,7 +126,6 @@
 
 .modal__checkbox-label {
     width: 35px;
-    height: 100%;
 }
 
 .modal__checkbox-label input[type=checkbox] {

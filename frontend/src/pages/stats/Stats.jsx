@@ -1,5 +1,5 @@
 import './Stats.css'
-import Header from "../root/components/header/header.jsx";
+import Header from "../../components/header/header.jsx";
 
 export default function Stats() {
     return (

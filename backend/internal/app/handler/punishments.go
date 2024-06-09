@@ -28,6 +28,12 @@ func (h *Handler) GetPunishments(c *gin.Context) {
 
 		return
 	}
+	if len(bans) == 0 {
+		response.NewErrorResponse(c, http.StatusNoContent, "No punishments in the database yet", "")
+
+		return
+	}
 
 	c.JSON(http.StatusOK, bans)
+	return
 }

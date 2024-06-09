@@ -1,0 +1,33 @@
+{
+  "components": {
+    "modal": {
+      "blocks": {
+        "description": {
+
+        }
+      }
+    },
+    "forms": {
+      "durations": {
+
+      },
+      "forms": {
+        "placeholders": {
+          "nickname": "Enter your nickname",
+          "email": "Enter your email"
+        },
+        "nicknameErrors": {
+          "empty": "The nickname field cannot be empty",
+          "short": "A nickname cannot be shorter than 3 characters"
+        },
+        "emailErrors": {
+          "empty": "The email field cannot be empty",
+          "invalid": "The email was entered incorrectly"
+        }
+      },
+      "navbuy": {
+
+      }
+    }
+  }
+}

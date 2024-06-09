@@ -3,8 +3,8 @@ import '../../../pages.css'
 
 export default function Footer() {
     return (
-        <footer className="footer bgc-1 b br20">
-            <div className="footer__main">
+        <footer className="footer bgc-1 b br20 w100">
+            <div className="footer__main h100">
                 <div className="footer__items">
                     <a className="footer__item discord" href="https://discord.gg/infinity-tm-494212272353181726"
                        target='_blank'>
@@ -38,7 +38,7 @@ export default function Footer() {
                         </svg>
                     </a>
                 </div>
-                <a className='delevoper' href='https://www.donationalerts.com/r/yacheru' target='_blank'>developed by yacheru</a>
+                <a className='delevoper' href='https://www.donationalerts.com/r/yacheru' target='_blank'>developed by <span className={'important'}>yacheru</span></a>
             </div>
         </footer>
     )

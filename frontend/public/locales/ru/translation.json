@@ -1,0 +1,33 @@
+{
+  "components": {
+    "modal": {
+      "blocks": {
+        "description": {
+
+        }
+      }
+    },
+    "forms": {
+      "durations": {
+
+      },
+      "forms": {
+        "placeholders": {
+          "nickname": "Введите ваш никнейм",
+          "email": "Введите вашу почту"
+        },
+        "nicknameErrors": {
+          "empty": "Поле никнейм не может быть пустым",
+          "short": "Никнейм не может быть короче 3 символов"
+        },
+        "emailErrors": {
+          "empty": "Поле почты не может быть пустым",
+          "invalid": "Почта введена некорректно"
+        }
+      },
+      "navbuy": {
+
+      }
+    }
+  }
+}

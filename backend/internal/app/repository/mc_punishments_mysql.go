@@ -19,16 +19,16 @@ func (mcMSQL *McMySQL) GetPunishments(limit int, pType string) ([]mc.LbPunishmen
 	offset := limit - 10
 
 	query := fmt.Sprintf(`
-		SELECT ln.uuid AS "victim.uuid", ln.name AS "victim.name", 
+		SELECT ln.uuid AS "victim.uuid", COALESCE(ln.name, 'Неизвестно') AS "victim.name", 
 			   lp.reason, 
 			   lp.start AS "time.start", 
 			   lp.end AS "time.end", 
 			   lp.operator AS "operator.uuid", 
 			   COALESCE(op.name, 'Console') AS "operator.name"
-		FROM %s lb 
-			LEFT JOIN %s lp ON lb.id = lp.id
-			LEFT JOIN %s lv ON lb.victim = lv.id
-			LEFT JOIN %s ln ON lv.uuid = ln.uuid
+		FROM %s pt 
+			INNER JOIN %s lp ON pt.id = lp.id
+			INNER JOIN %s lv ON pt.victim = lv.id
+			INNER JOIN %s ln ON lv.uuid = ln.uuid
 			LEFT JOIN %s op ON lp.operator = op.uuid
 		ORDER BY lp.start DESC
 		LIMIT ?

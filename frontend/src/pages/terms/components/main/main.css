@@ -1,5 +1,14 @@
+.term__container {
+    padding-top: 10px;
+    height: 90%;
+}
+
 .term__header {
-    font-size: xx-large;
+    padding: 10px;
+}
+
+.term__title {
+    font-size: 2rem;
     margin-bottom: 10px;
     color: #fff;
 }
@@ -16,10 +25,6 @@
 .term__ordered-item {
     margin-bottom: 30px;
     font-size: larger;
-}
-
-.term__ordered-item a {
-    color: #5865f2;
 }
 
 .term__ordered-item:last-child {
