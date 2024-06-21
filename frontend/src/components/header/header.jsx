@@ -25,8 +25,8 @@ export default function Header() {
                     </li>
                     |
                     <li className={`header__item`}>
-                        <a className={'header__item-link docs'} href={'https://docs.infinity-mc.ru'}
-                           target={'_blank'}>Документация</a>
+                        <a className={'header__item-link docs'} href={'https://forum.infinity-mc.ru'}
+                           target={'_blank'}>Форум</a>
                     </li>
                     |
                     <li className={`header__item ${selected === '/punishments' ? 'header-selected' : ''}`}>
