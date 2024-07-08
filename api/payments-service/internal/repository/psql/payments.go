@@ -2,9 +2,9 @@ package psql
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
+	"statistic-service"
 
-	"payments-service/pkg/util/constants"
+	"github.com/jmoiron/sqlx"
 )
 
 type PaymentsPSQL struct {
@@ -15,14 +15,14 @@ func NewPaymentsPSQL(db *sqlx.DB) *PaymentsPSQL {
 	return &PaymentsPSQL{db: db}
 }
 
-func (pPSQL *PaymentsPSQL) CreateHistory(paymentId, nickname, price, donatType string) error {
-	tx, err := pPSQL.db.Begin()
+func (p *PaymentsPSQL) CreateHistory(paymentId, nickname, price, donatType string) error {
+	tx, err := p.db.Begin()
 	if err != nil {
 		return err
 	}
 
 	var paymentPK int
-	setHistory := fmt.Sprintf("INSERT INTO %s (payment_id, price, donat_type) VALUES ($1, $2, $3) RETURNING id", constants.PaymentsHistory)
+	setHistory := fmt.Sprintf("INSERT INTO %s (payment_id, price, donat_type) VALUES ($1, $2, $3) RETURNING id", statistic_service.PaymentsHistory)
 
 	row := tx.QueryRow(setHistory, paymentId, price, donatType)
 	err = row.Scan(&paymentPK)
@@ -30,7 +30,7 @@ func (pPSQL *PaymentsPSQL) CreateHistory(paymentId, nickname, price, donatType s
 		return tx.Rollback()
 	}
 
-	setUsersPayments := fmt.Sprintf("INSERT INTO %s (nickname, payment_id) VALUES ($1, $2)", constants.UsersPayments)
+	setUsersPayments := fmt.Sprintf("INSERT INTO %s (nickname, payment_id) VALUES ($1, $2)", statistic_service.UsersPayments)
 	_, err = tx.Exec(setUsersPayments, nickname, paymentPK)
 	if err != nil {
 		return tx.Rollback()

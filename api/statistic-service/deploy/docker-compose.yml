@@ -1,0 +1,31 @@
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+
+#  postgres:
+#    user: root
+#    hostname: postgres
+#    container_name: postgres
+#    image: postgres:14.12-alpine3.20
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_DB: ${POSTGRES_DB:?error}
+#      POSTGRES_USER: ${POSTGRES_USER?error}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?error}
+#    healthcheck:
+#      disable: false
+#      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+#      interval: 30s
+#      timeout: 60s
+#      retries: 5
+#      start_period: 60s
+#    volumes:
+#      - .data:/postgresql/data
+#      - ../../../configs/postgres:/postgresql/conf
+#    networks:
+#      - payment-network
+
+#networks:
+#  payment-network:
+#    name: payment-network

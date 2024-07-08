@@ -1,14 +1,10 @@
 package constants
 
 const (
-	LoggerCategory          = "category"
-	LoggerCategoryServer    = "server"
-	LoggerCategoryConfig    = "config"
-	LoggerCategoryDatabase  = "database"
-	LoggerCategoryHTTP      = "http"
-	LoggerCategoryMigration = "migration"
-	LoggerCategoryCORS      = "cors"
-	LoggerCategorySeeder    = "seeder"
+	LoggerCategory       = "category"
+	LoggerCategoryConfig = "config"
+	LoggerCategoryKafka  = "kafka"
+	LoggerCategoryRCON   = "RCON"
 
 	LoggerFile = "file"
 )

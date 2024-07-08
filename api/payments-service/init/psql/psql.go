@@ -12,7 +12,7 @@ type DBConfig struct {
 	DataSourceName string
 }
 
-func (config *DBConfig) InitPsqlDatabase() (*sqlx.DB, error) {
+func (config *DBConfig) InitPSQLDatabase() (*sqlx.DB, error) {
 	db, err := sqlx.Connect(config.DriverName, config.DataSourceName)
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to database: %s", err.Error())

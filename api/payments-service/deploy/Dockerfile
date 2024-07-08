@@ -1,10 +1,18 @@
-FROM golang:alpine3.19
+FROM golang:alpine AS builder
 
 WORKDIR /payments-service
 
-COPY .. /payments-service
+ADD ../go.mod .
 
-RUN go mod download
-RUN go build -o ./build/go_build_main_go.exe ./cmd/main.go
+COPY . .
 
-CMD ["./build/go_build_main_go.exe"]
+RUN go build -o ./build/payment.exe ./cmd/main.go
+
+FROM alpine
+
+WORKDIR /payments-service
+
+COPY ./configs/.env /payments-service/configs/.env
+COPY --from=builder /payments-service/build /payments-service
+
+CMD ["/payments-service/payment.exe"]

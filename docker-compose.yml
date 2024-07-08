@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email="
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./configs/traefik/traefik:/etc/traefik
+      - ./configs/traefik/hosts:/custom/:ro
+    depends_on:
+      - api
+      - frontend
+
+  api:
+    container_name: backend
+    build: backend
+    command: ./build/go_build_main_go.exe
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.infinity-mc.ru`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: docker.io/bitnami/postgresql:16
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
+    volumes:
+      - .data/pg-local:/bitnami/postgresql/data
+      - ./config/postgres:/bitnami/postgresql/conf
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    container_name: frontend
+    build: frontend
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`infinity-mc.ru`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+
+volumes:
+  postgres_data:

@@ -16,9 +16,8 @@ type Config struct {
 	YKassaID   string `mapstructure:"YKASSA_ID"`
 	YKassaPass string `mapstructure:"YKASSA_PASS"`
 
-	RCONPort int    `mapstructure:"RCON_PORT"`
-	RCONIp   string `mapstructure:"RCON_IP"`
-	RCONPass string `mapstructure:"RCON_PASS"`
+	KafkaBrokers []string `mapstructure:"KAFKA_BROKERS"`
+	KafkaTopic   string   `mapstructure:"KAFKA_TOPIC"`
 
 	PSQLDriver string `mapstructure:"POSTGRES_DRIVER"`
 	PSQLURL    string `mapstructure:"POSTGRES_URL"`
@@ -43,7 +42,6 @@ func InitConfig() error {
 
 	if ServerConfig.APIPort == 0 || ServerConfig.APIEnvironment == "" ||
 		ServerConfig.YKassaID == "" || ServerConfig.YKassaPass == "" ||
-		ServerConfig.RCONPort == 0 || ServerConfig.RCONIp == "" || ServerConfig.RCONPass == "" ||
 		ServerConfig.PSQLDriver == "" || ServerConfig.PSQLURL == "" || ServerConfig.PSQLDsn == "" {
 		return constants.ErrEmptyVar
 	}

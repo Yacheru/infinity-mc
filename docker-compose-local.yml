@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  traefik:
+    restart: always
+    container_name: traefik
+    image: traefik:v3.0
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./configs/traefik:/etc/traefik
+      - ./configs/traefik/acme.json:/acme.json
+    depends_on:
+      - frontend
+      - api
+    networks:
+      - traefik
+
+  api:
+    restart: always
+    container_name: api
+    user: root
+    build:
+      context: api
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    networks:
+      - traefik
+
+  postgres:
+    restart: always
+    user: root
+    container_name: postgres
+    image: docker.io/bitnami/postgresql:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./configs/postgres/.data/pg-local:/bitnami/postgresql/data
+      - ./configs/postgres:/bitnami/postgresql/conf
+    networks:
+      - traefik
+
+  frontend:
+    restart: always
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    name: traefik-network

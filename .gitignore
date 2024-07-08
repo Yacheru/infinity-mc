@@ -6,8 +6,10 @@ dist
 dist-ssr
 *.local
 
-*.yml
-*.sql
+api/*/*.yml
+api/*/.data
+api/*/kafka-data
+configs/*/*.yml
 api/*/build
 
 # Logs

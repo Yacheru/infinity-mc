@@ -22,7 +22,7 @@ func SetupPSQLDatabase() (*sqlx.DB, error) {
 		DataSourceName: dsn,
 	}
 
-	conn, err := config.InitPsqlDatabase()
+	conn, err := config.InitPSQLDatabase()
 	if err != nil {
 		return nil, err
 	}

@@ -4,11 +4,10 @@ const (
 	LoggerCategory          = "category"
 	LoggerCategoryServer    = "server"
 	LoggerCategoryConfig    = "config"
-	LoggerCategoryDatabase  = "database"
+	LoggerCategoryKafka     = "Kafka"
 	LoggerCategoryHTTP      = "http"
 	LoggerCategoryMigration = "migration"
 	LoggerCategoryCORS      = "cors"
-	LoggerCategorySeeder    = "seeder"
 
 	LoggerFile = "file"
 )

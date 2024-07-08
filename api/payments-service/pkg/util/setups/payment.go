@@ -2,26 +2,26 @@ package setups
 
 import (
 	"fmt"
+	records2 "payments-service/internal/records"
 
 	"payments-service/internal/http/client"
-	"payments-service/internal/repository/records"
 )
 
-func SetupPayment(handler *client.PaymentHandler, price, donat, nickname, duration, email string) (*records.Payment, error) {
-	payment, err := handler.CreatePayment(&records.Payment{
-		Amount: &records.Amount{
+func SetupPayment(handler *client.PaymentHandler, price, donat, nickname, duration, email string) (*records2.Payment, error) {
+	payment, err := handler.CreatePayment(&records2.Payment{
+		Amount: &records2.Amount{
 			Value:    price,
 			Currency: "RUB",
 		},
-		PaymentMethod: records.PaymentMethodType("bank_card"),
-		Receipt: &records.Receipt{
-			Customer: &records.Email{
+		PaymentMethod: records2.PaymentMethodType("bank_card"),
+		Receipt: &records2.Receipt{
+			Customer: &records2.Email{
 				Email: email,
 			},
-			Items: &[]records.Items{
+			Items: &[]records2.Items{
 				{
 					Description: fmt.Sprintf("Услуга %s", donat),
-					Amount: &records.Amount{
+					Amount: &records2.Amount{
 						Value:    price,
 						Currency: "RUB",
 					},
@@ -30,14 +30,14 @@ func SetupPayment(handler *client.PaymentHandler, price, donat, nickname, durati
 				},
 			},
 		},
-		Metadata: &records.Metadata{
-			Nickname:  nickname,
-			DonatType: donat,
-			Price:     price,
-			Duration:  duration,
+		Metadata: &records2.Metadata{
+			Nickname: nickname,
+			Service:  donat,
+			Price:    price,
+			Duration: duration,
 		},
 		Capture: true,
-		Confirmation: records.Redirect{
+		Confirmation: records2.Redirect{
 			Type:      "redirect",
 			ReturnURL: "https://infinity-mc.ru/",
 		},

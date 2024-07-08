@@ -18,16 +18,17 @@ import (
 	"payments-service/init/logger"
 	"payments-service/internal/http/middlewares"
 	"payments-service/internal/http/routes"
+	"payments-service/internal/kafka/producer"
 	"payments-service/pkg/util/constants"
-	"payments-service/pkg/util/setups"
 )
 
 type Server struct {
 	HttpServer *http.Server
+	Producer   *producer.KafkaProducer
 }
 
 func NewServer() (*Server, error) {
-	db, err := setups.SetupPSQLDatabase()
+	kafkaProducer, err := producer.NewKafkaProducer()
 	if err != nil {
 		return nil, err
 	}
@@ -35,24 +36,25 @@ func NewServer() (*Server, error) {
 	router := setupRouter()
 
 	api := router.Group("/payments")
-	routes.NewPaymentsRoute(api, db).Routes()
+	routes.NewPaymentsRoute(api, kafkaProducer).Routes()
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf(":%d", config.ServerConfig.APIPort),
 		Handler:           router,
 		ReadHeaderTimeout: 10 * time.Second,
 		WriteTimeout:      10 * time.Second,
-		MaxHeaderBytes:    1 << 20,
+		MaxHeaderBytes:    1 << 20, // 1mb
 	}
 
 	return &Server{
 		HttpServer: server,
+		Producer:   kafkaProducer,
 	}, nil
 }
 
 func (s *Server) Run() error {
 	go func() {
-		logger.InfoF("success to listen and serve on :%d", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer}, config.ServerConfig.APIPort)
+		logger.InfoF("success to listen and serve on :%d port", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer}, config.ServerConfig.APIPort)
 		if err := s.HttpServer.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
 			log.Fatalf("Failed to listen and serve: %+v", err)
 		}
@@ -62,14 +64,23 @@ func (s *Server) Run() error {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
-	logger.Info("shutdown server ...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	logger.Info("shutdown server in 5 seconds...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
+
 	if err := s.HttpServer.Shutdown(ctx); err != nil {
-		return fmt.Errorf("error when shutdown server: %v", err)
+		logrus.Errorf("error when shutdown http server: %v", err)
+
+		return err
 	}
+
+	//if err := s.Producer.Close(); err != nil {
+	//	logrus.Errorf("error when close kafka producer: %v", err)
+	//
+	//	return err
+	//}
 
 	<-ctx.Done()
 	logger.Info("timeout of 5 seconds.", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})

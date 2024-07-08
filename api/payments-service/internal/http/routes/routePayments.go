@@ -2,35 +2,28 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
-	"payments-service/internal/http/middlewares"
-
 	"payments-service/internal/http/handlers"
-	"payments-service/internal/http/service"
-	"payments-service/internal/repository/psql"
+	"payments-service/internal/http/middlewares"
+	"payments-service/internal/kafka/producer"
 )
 
 type RoutePunishments struct {
 	handler *handlers.PaymentsHandler
 	router  *gin.RouterGroup
-	db      *sqlx.DB
 }
 
-func NewPaymentsRoute(router *gin.RouterGroup, db *sqlx.DB) *RoutePunishments {
-	repo := psql.NewRepository(db)
-	services := service.NewService(repo)
-	handler := handlers.NewPaymentsHandler(services)
+func NewPaymentsRoute(router *gin.RouterGroup, producer *producer.KafkaProducer) *RoutePunishments {
+	handler := handlers.NewPaymentsHandler(producer)
 
 	return &RoutePunishments{
 		handler: handler,
 		router:  router,
-		db:      db,
 	}
 }
 
 func (r *RoutePunishments) Routes() {
 	{
 		r.router.GET("/create", middlewares.ValidatePaymentParams(), r.handler.CreatePayment)
-		r.router.POST("/accept", r.handler.Accept)
+		r.router.GET("/accept", r.handler.Accept)
 	}
 }

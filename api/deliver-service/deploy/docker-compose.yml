@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+#  deliver:
+#    container_name: deliver
+#    user: root
+#    build:
+#      context: ..
+#      dockerfile: ./deploy/Dockerfile
+#    depends_on:
+#      - kafka-ui
+#    networks:
+#      - deliver-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+#      - AUTH_TYPE="LOGIN_FORM"
+#      - SPRING_SECURITY_USER_NAME=admin
+#      - SPRING_SECURITY_USER_PASSWORD=pass
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    depends_on:
+      - zookeeper
+      - kafka-1
+    networks:
+      - deliver-network
+
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - deliver-network
+
+  kafka-1:
+    image: wurstmeister/kafka
+    ports:
+      - "9095:9094"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://kafka-1:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+
+      KAFKA_LOG_DIRS: /kafka/logs
+      KAFKA_BROKER_ID: 500
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./kafka-data/500:/kafka
+    depends_on:
+      - zookeeper
+    networks:
+      - deliver-network
+
+networks:
+  deliver-network:

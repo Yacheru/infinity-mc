@@ -13,6 +13,8 @@ func init() {
 
 	log.SetOutput(os.Stdout)
 
+	log.SetLevel(logrus.DebugLevel)
+
 	log.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 		ForceColors:   true,

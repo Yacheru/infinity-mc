@@ -1,24 +1,24 @@
 package handlers
 
 import (
-	"net/http"
-
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"net/http"
 
 	"payments-service/init/config"
 	"payments-service/internal/http/client"
-	"payments-service/internal/http/service"
-	"payments-service/internal/repository/records"
+	"payments-service/internal/kafka/producer"
+	"payments-service/internal/records"
 	"payments-service/pkg/util/setups"
 )
 
 type PaymentsHandler struct {
-	services *service.Service
+	producer *producer.KafkaProducer
 }
 
-func NewPaymentsHandler(services *service.Service) *PaymentsHandler {
+func NewPaymentsHandler(producer *producer.KafkaProducer) *PaymentsHandler {
 	return &PaymentsHandler{
-		services: services,
+		producer: producer,
 	}
 }
 
@@ -45,29 +45,30 @@ func (h *PaymentsHandler) CreatePayment(c *gin.Context) {
 
 func (h *PaymentsHandler) Accept(c *gin.Context) {
 	var paid = &records.Paid{}
-	if err := c.ShouldBindJSON(&paid); err != nil {
+	if err := c.ShouldBindJSON(paid); err != nil {
 		NewErrorResponse(c, http.StatusForbidden, "Invalid request body")
 
 		return
 	}
 
-	// TODO: new deliver service!!!
-	//if err := GiveDonat(paid.Object.Metadata.DonatType, paid.Object.Metadata.Nickname, paid.Object.Metadata.Duration); err != nil {
-	//	NewErrorResponse(c, http.StatusInternalServerError, "error of donate delivery")
-	//
-	//	return
-	//}
+	message, err := json.Marshal(&records.MC{
+		Nickname: paid.Object.Metadata.Nickname,
+		Duration: paid.Object.Metadata.Duration,
+		Service:  paid.Object.Metadata.Service,
+	})
 
-	//if err := h.services.Payment.CreateHistory(
-	//	paid.Object.ID,
-	//	paid.Object.Metadata.Nickname,
-	//	paid.Object.Metadata.Price,
-	//	paid.Object.Metadata.DonatType,
-	//); err != nil {
-	//	NewErrorResponse(c, http.StatusInternalServerError, "error creating history")
-	//
-	//	return
-	//}
+	if err != nil {
+		NewErrorResponse(c, http.StatusForbidden, "Invalid request body")
+
+		return
+	}
+
+	err = h.producer.PrepareMessage(message)
+	if err != nil {
+		NewErrorResponse(c, http.StatusInternalServerError, "Failed to prepare message")
+
+		return
+	}
 
 	NewSuccessResponse(c, http.StatusOK, "success", paid.Object.Metadata)
 }

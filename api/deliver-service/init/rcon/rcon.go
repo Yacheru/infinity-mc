@@ -1,23 +1,25 @@
 package rcon
 
-//
-//import (
-//	//"fmt"
-//	//"github.com/gorcon/rcon"
-//	//"github.com/sirupsen/logrus"
-//	//"github.com/spf13/viper"
-//	"github.com/gorcon/rcon"
-//)
-//
-//func InitRCON() *rcon.Conn {
-//	//ip := viper.GetString("rcon.ip")
-//	//port := viper.GetString("rcon.port")
-//	//ipport := fmt.Sprintf("%s:%s", ip, port)
-//	//
-//	//connect, err := rcon.Dial(ipport, viper.GetString("rcon.pass"))
-//	//if err != nil {
-//	//	logrus.Fatalf("Error creating rcon connection, %s", err.Error())
-//	//}
-//	//
-//	//return connect
-//}
+import (
+	"deliver-service/init/logger"
+	"github.com/gorcon/rcon"
+	"github.com/sirupsen/logrus"
+
+	"deliver-service/pkg/util/constants"
+)
+
+type ConfigRCON struct {
+	Address  string
+	Password string
+}
+
+func (c *ConfigRCON) InitRCON() (*rcon.Conn, error) {
+	connect, err := rcon.Dial(c.Address, c.Password)
+	if err != nil {
+		logger.FatalF("err rcon dial: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryRCON}, err)
+
+		return nil, constants.ErrDialRCON
+	}
+
+	return connect, nil
+}

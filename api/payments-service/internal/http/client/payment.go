@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-
-	"payments-service/internal/repository/records"
+	"payments-service/internal/records"
 )
 
 const (

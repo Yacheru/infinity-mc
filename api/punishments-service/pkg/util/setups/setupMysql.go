@@ -2,6 +2,7 @@ package setups
 
 import (
 	"github.com/jmoiron/sqlx"
+
 	"punishments-service/init/config"
 	"punishments-service/init/mysql"
 	"punishments-service/pkg/util/constants"
