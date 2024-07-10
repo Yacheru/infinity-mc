@@ -32,13 +32,12 @@ entryPoints:
             sans:
               - map.infinity-mc.ru
               - forum.infinity-mc.ru
-              - traefik.infinity-mc.ru
 
 certificatesResolvers:
   letsEncrypt:
     acme:
       httpChallenge:
         entryPoint: webSecure
-#      caServer: https://acme-v02.api.letsencrypt.org/directory
+      caServer: https://acme-v02.api.letsencrypt.org/directory
       storage: /etc/traefik/acme.json
       email: amilohin274@gmail.com

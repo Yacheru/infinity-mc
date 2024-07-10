@@ -1,10 +1,18 @@
-FROM golang:alpine3.19
+FROM golang:alpine AS builder
 
 WORKDIR /punishments-service
 
-COPY ../ /punishments-service
+ADD ../go.mod .
 
-RUN go mod download
-RUN go build -o ./build/go_build_main_go.exe ./cmd/main.go
+COPY . .
 
-CMD ["./build/go_build_main_go.exe"]
+RUN go build -o ./build/punishments.exe ./cmd/main.go
+
+FROM alpine
+
+WORKDIR /punishments-service
+
+COPY ./configs/.env /punishments-service/configs/.env
+COPY --from=builder /punishments-service/build /punishments-service
+
+CMD ["/punishments-service/punishments.exe"]

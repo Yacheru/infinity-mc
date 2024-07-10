@@ -19,7 +19,7 @@ func init() {
 func main() {
 	app, err := server.NewServer()
 	if err != nil {
-		logger.Panic(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
+		logger.Fatal(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
 	}
 	if err := app.Run(); err != nil {
 		logger.Fatal(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})

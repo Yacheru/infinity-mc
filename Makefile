@@ -9,7 +9,7 @@ docker-local:
 docker-prod:
 	docker-compose -f docker-compose.yml up -d --remove-orphans --build
 
-docker-prune:
+docker-down:
 	docker system prune -fa
 
 migrate-up:

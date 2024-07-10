@@ -4,69 +4,124 @@ services:
   traefik:
     container_name: traefik
     image: traefik:v3.0
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entryPoints.web.address=:80"
-      - "--entryPoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email="
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./configs/traefik/traefik:/etc/traefik
-      - ./configs/traefik/hosts:/custom/:ro
+      - ./configs/traefik:/etc/traefik
+      - ./configs/traefik/acme.json:/acme.json
     depends_on:
-      - api
-      - frontend
+      - deliver-service
+      - payments-service
+      - punishments-service
+    networks:
+      - traefik
 
-  api:
-    container_name: backend
-    build: backend
-    command: ./build/go_build_main_go.exe
+  deliver-service:
+    container_name: deliver
+    user: root
+    build:
+      context: ./api/deliver-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      - kafka-ui
+    networks:
+      - traefik
+
+  payments-service:
+    user: root
+    container_name: payments
     expose:
-      - 80
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.infinity-mc.ru`)"
-      - "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - 9092
+    build:
+      context: ./api/payments-service
+      dockerfile: ./deploy/Dockerfile
     depends_on:
-      - postgres
+      - kafka-ui
+    networks:
+      - traefik
 
-  postgres:
-    container_name: postgres
-    image: docker.io/bitnami/postgresql:16
+  punishments-service:
+    container_name: punishments-service
+    user: root
+    build:
+      context: ./api/punishments-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      - mysql
+    networks:
+      - traefik
+
+  zookeeper:
+    image: zookeeper
     ports:
-      - "5432:5432"
-    expose:
-      - "5432"
+      - "2181:2181"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - traefik
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    depends_on:
+      - zookeeper
+      - kafka-1
+    networks:
+      - traefik
+
+  kafka-1:
+    image: wurstmeister/kafka
+    ports:
+      - "9095:9094"
+    expose:
+      - 9092
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://kafka-1:9094
+#      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+
+      KAFKA_LOG_DIRS: /kafka/logs
+      KAFKA_BROKER_ID: 500
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
-      - .data/pg-local:/bitnami/postgresql/data
-      - ./config/postgres:/bitnami/postgresql/conf
-      - postgres_data:/var/lib/postgresql/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./configs/kafka-data/500:/kafka
+    depends_on:
+      - zookeeper
+    networks:
+      - traefik
 
   frontend:
     container_name: frontend
-    build: frontend
-    expose:
-      - 80
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`infinity-mc.ru`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - traefik
 
-volumes:
-  postgres_data:
+  mysql:
+    container_name: mysql
+    image: mysql:oraclelinux9
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: false
+    networks:
+      - traefik
+    volumes:
+      - ./configs/mysql/data:/var/lib/mysql/
+
+networks:
+  traefik:
+    name: traefik-network
+    driver: bridge

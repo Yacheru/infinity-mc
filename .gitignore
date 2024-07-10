@@ -11,6 +11,7 @@ api/*/.data
 api/*/kafka-data
 configs/*/*.yml
 api/*/build
+docker-compose
 
 # Logs
 logs

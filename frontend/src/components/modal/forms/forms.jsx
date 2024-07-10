@@ -1,12 +1,13 @@
-import axios from "axios";
 
-import React, {useEffect, useRef, useState} from "react";
-import {useTranslation} from "react-i18next";
+import React, {useEffect, useRef, useState} from "react"
+import {useTranslation} from "react-i18next"
 
-import data from "../../../../data.json";
-import cfg from "../../../../config.json";
+import data from "../../../../data.json"
+import cfg from "../../../../config.json"
 
-import './forms.css';
+import * as axios from '../../../api/axios/requests'
+
+import './forms.css'
 import '../../../pages/pages.css'
 
 export default function Form({ item }) {
@@ -75,7 +76,7 @@ export default function Form({ item }) {
         }
     }
 
-    const submitForm = () => {
+    const submitForm = async () => {
         const price = {
             0: '169',
             1: '369',
@@ -90,19 +91,8 @@ export default function Form({ item }) {
             dur = '3'
         }
 
-        let url
-        switch (cfg['status']) {
-            case 'local':
-                url = `http://localhost/v1/payment/?nickname=${nickname}&email=${email}&price=${price[duration]}&donat=${item}&duration=${dur}`
-                break
-            case 'prod':
-                url = `https://api.infinity-mc.ru/v1/payment/?nickname=${nickname}&email=${email}&price=${price[duration]}&donat=${item}&duration=${dur}`
-                break
-        }
-
-        axios.get(url).then((res) => {
-            return window.open(res.data['confirmation']['confirmation_url'])
-        });
+        const paymentResponse = await axios.createPayment(nickname, email, price, duration, item, dur)
+        return window.open(paymentResponse.data['confirmation']['confirmation_url'])
     }
 
     return (
