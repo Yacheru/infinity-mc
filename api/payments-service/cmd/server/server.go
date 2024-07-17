@@ -76,12 +76,6 @@ func (s *Server) Run() error {
 		return err
 	}
 
-	//if err := s.Producer.Close(); err != nil {
-	//	logrus.Errorf("error when close kafka producer: %v", err)
-	//
-	//	return err
-	//}
-
 	<-ctx.Done()
 	logger.Info("timeout of 5 seconds.", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
 	logger.Info("server exiting", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})

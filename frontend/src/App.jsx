@@ -1,5 +1,6 @@
 import React, {lazy, Suspense} from "react";
-import { Routes, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
+import { FaroRoutes } from "@grafana/faro-react";
 
 import Loading from './Load.jsx'
 
@@ -15,7 +16,7 @@ const Stats = lazy(() => import('./pages/stats/Stats.jsx'))
 
 export default function App() {
     return (
-        <Routes>
+        <FaroRoutes>
             <Route
                 path='*'
                 element={
@@ -49,6 +50,6 @@ export default function App() {
                     </Suspense>
                 }
             />
-        </Routes>
+        </FaroRoutes>
     );
 }

@@ -20,13 +20,11 @@ export default function Header() {
                     </li>
                     |
                     <li className={`header__item`}>
-                        <a className={'header__item-link map'} href={'https://map.infinity-mc.ru'}
-                           target={'_blank'}>Карта</a>
+                        <a className={'header__item-link map'} href={'https://map.infinity-mc.ru'}>Карта</a>
                     </li>
                     |
                     <li className={`header__item`}>
-                        <a className={'header__item-link docs'} href={'https://forum.infinity-mc.ru'}
-                           target={'_blank'}>Форум</a>
+                        <a className={'header__item-link docs'} href={'https://forum.infinity-mc.ru'}>Форум</a>
                     </li>
                     |
                     <li className={`header__item ${selected === '/punishments' ? 'header-selected' : ''}`}>

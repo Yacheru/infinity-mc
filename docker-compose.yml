@@ -9,7 +9,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./configs/traefik:/etc/traefik
-      - ./configs/traefik/acme.json:/acme.json
+      - ./configs/traefik:/acme.json
     depends_on:
       - deliver-service
       - payments-service
@@ -86,7 +86,6 @@ services:
 
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://kafka-1:9094
-#      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://localhost:9095
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
 
       KAFKA_LOG_DIRS: /kafka/logs

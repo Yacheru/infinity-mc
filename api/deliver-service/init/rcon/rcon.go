@@ -1,10 +1,10 @@
 package rcon
 
 import (
-	"deliver-service/init/logger"
 	"github.com/gorcon/rcon"
 	"github.com/sirupsen/logrus"
 
+	"deliver-service/init/logger"
 	"deliver-service/pkg/util/constants"
 )
 

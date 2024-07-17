@@ -1,10 +1,10 @@
 package config
 
 import (
-	"deliver-service/init/logger"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
+	"deliver-service/init/logger"
 	"deliver-service/pkg/util/constants"
 )
 
