@@ -7,4 +7,4 @@
 
 ### Дизайн системы: 
 
-![](architecture/img.png)
+![](design/img.png)
