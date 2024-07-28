@@ -2,26 +2,25 @@ package setups
 
 import (
 	"fmt"
-	records2 "payments-service/internal/records"
-
-	"payments-service/internal/http/client"
+	"payments-service/internal/entities"
+	"payments-service/internal/server/http/client"
 )
 
-func SetupPayment(handler *client.PaymentHandler, price, donat, nickname, duration, email string) (*records2.Payment, error) {
-	payment, err := handler.CreatePayment(&records2.Payment{
-		Amount: &records2.Amount{
+func SetupPayment(handler *client.PaymentHandler, price, donat, nickname, duration, email string) (*entities.Payment, error) {
+	payment, err := handler.CreatePayment(&entities.Payment{
+		Amount: &entities.Amount{
 			Value:    price,
 			Currency: "RUB",
 		},
-		PaymentMethod: records2.PaymentMethodType("bank_card"),
-		Receipt: &records2.Receipt{
-			Customer: &records2.Email{
+		PaymentMethod: entities.PaymentMethodType("bank_card"),
+		Receipt: &entities.Receipt{
+			Customer: &entities.Email{
 				Email: email,
 			},
-			Items: &[]records2.Items{
+			Items: &[]entities.Items{
 				{
 					Description: fmt.Sprintf("Услуга %s", donat),
-					Amount: &records2.Amount{
+					Amount: &entities.Amount{
 						Value:    price,
 						Currency: "RUB",
 					},
@@ -30,14 +29,14 @@ func SetupPayment(handler *client.PaymentHandler, price, donat, nickname, durati
 				},
 			},
 		},
-		Metadata: &records2.Metadata{
+		Metadata: &entities.Metadata{
 			Nickname: nickname,
 			Service:  donat,
 			Price:    price,
 			Duration: duration,
 		},
 		Capture: true,
-		Confirmation: records2.Redirect{
+		Confirmation: entities.Redirect{
 			Type:      "redirect",
 			ReturnURL: "https://infinity-mc.ru/",
 		},

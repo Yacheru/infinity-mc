@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/sirupsen/logrus"
+	"payments-service/internal/server"
 
-	"payments-service/cmd/server"
 	"payments-service/init/config"
 	"payments-service/init/logger"
 	"payments-service/pkg/util/constants"
