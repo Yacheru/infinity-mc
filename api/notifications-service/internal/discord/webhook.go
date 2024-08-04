@@ -5,6 +5,7 @@ import (
 	"github.com/disgoorg/disgo/webhook"
 	"notifications-service/init/config"
 	"notifications-service/internal/entities"
+	"notifications-service/internal/utils"
 )
 
 type Sender interface {
@@ -21,9 +22,11 @@ func NewWebhookClient(cfg *config.Config) *Webhook {
 }
 
 func (wh *Webhook) SendNotification(msg *entities.Message) error {
+	s := utils.LocalizeStruct(msg)
+
 	_, err := wh.CreateEmbeds([]discord.Embed{
 		discord.NewEmbedBuilder().
-			SetDescriptionf("Игрок %s купил %s на %s месяц(-ев)", msg.Nickname, msg.Service, msg.Duration).
+			SetDescriptionf("Игрок **%s** купил **%s** на **%s**", s.Nickname, s.Service, s.Duration).
 			SetColor(3140873).
 			Build(),
 	})
