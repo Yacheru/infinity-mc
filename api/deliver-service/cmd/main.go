@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"os"
 	"os/signal"
 	"syscall"
 
@@ -19,31 +18,27 @@ func init() {
 	if err := config.InitConfig(); err != nil {
 		logger.Fatal(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryConfig})
 	}
-	logger.Info("Configuration loaded", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryConfig})
+	logger.Info("configuration loaded", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryConfig})
 }
 
 func main() {
-	logger.Info("Starting server...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryConfig})
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	defer cancel()
 
 	r, err := setups.SetupRCONConnection()
 	if err != nil {
-		logger.Fatal("error setting up RCON connection", logrus.Fields{constants.LoggerCategory: constants.LoggerFile})
-		os.Exit(1)
+		logger.ErrorF("error setting up RCON connection: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerFile}, err.Error())
+
+		cancel()
 	}
 
-	ctx := context.Background()
-	err = consumer.NewConsumerGroup(ctx, r)
-	if err != nil {
-		logger.FatalF("consumer error: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerFile}, err)
-		os.Exit(1)
+	if err := consumer.NewConsumerGroup(ctx, r); err != nil {
+		logger.ErrorF("consumer error: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerFile}, err.Error())
+
+		cancel()
 	}
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	logger.Info("Shutting down server...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryConfig})
+	<-ctx.Done()
 
-	for {
-
-	}
+	logger.Info("shutting down server...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryConfig})
 }

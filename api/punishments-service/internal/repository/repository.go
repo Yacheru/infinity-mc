@@ -1,13 +1,15 @@
 package repository
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+
 	"punishments-service/internal/entities"
 	"punishments-service/internal/repository/mysql/punishments"
 )
 
 type PunishmentsRepository interface {
-	GetPunishments(limit int, pType string) ([]entities.LbPunishments, error)
+	GetPunishments(ctx *gin.Context, limit int, pType string) ([]entities.LbPunishments, error)
 }
 
 type Repository struct {

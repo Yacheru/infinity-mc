@@ -53,6 +53,9 @@ func NewServer() (*Server, error) {
 }
 
 func (s *Server) Run() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	go func() {
 		logger.InfoF("success to listen and serve on :%d port", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer}, config.ServerConfig.APIPort)
 		if err := s.HttpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -64,9 +67,6 @@ func (s *Server) Run() error {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
 
 	logger.Info("shutdown server in 5 seconds...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
 

@@ -1,6 +1,7 @@
 package consumer
 
 import (
+	"deliver-service/internal/entities"
 	"encoding/json"
 
 	"github.com/IBM/sarama"
@@ -12,45 +13,50 @@ import (
 )
 
 type Consumer struct {
-	r rcon.Deliver
+	rcon rcon.Deliver
 }
 
 func NewConsumer(rcon rcon.Deliver) *Consumer {
 	return &Consumer{
-		r: rcon,
+		rcon: rcon,
 	}
 }
 
 func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	var mc rcon.MC
+	var mc = new(entities.MC)
 
-	for message := range claim.Messages() {
+	for {
 		select {
 		case <-session.Context().Done():
 			session.Commit()
+
+			logger.Info("end of consumer work...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka})
+
 			return nil
-		default:
-			err := json.Unmarshal(message.Value, &mc)
+		case msg, ok := <-claim.Messages():
+			if !ok {
+				logger.Debug("message channel is closed", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka})
+			}
+
+			err := json.Unmarshal(msg.Value, &mc)
 			if err != nil {
 				logger.ErrorF("error unmarshal message: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, err)
-				logger.DebugF("message: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, message.Value)
+				logger.DebugF("unmarshaled message: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, string(msg.Value))
 
 				return err
 			}
 
-			err = c.r.DeliverService(mc.Nickname, mc.Service, mc.Duration)
+			err = c.rcon.DeliverService(mc.Nickname, mc.Service, mc.Duration)
 			if err != nil {
 				logger.ErrorF("error deliver service: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, err)
-
 				return err
 			}
-			session.MarkMessage(message, "")
 
-			logger.InfoF("Consumed message: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, mc)
+			logger.DebugF("consumed message: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, mc)
+
+			session.MarkMessage(msg, "")
 		}
 	}
-
-	return nil
 }
 
 func (c *Consumer) Setup(sarama.ConsumerGroupSession) error {

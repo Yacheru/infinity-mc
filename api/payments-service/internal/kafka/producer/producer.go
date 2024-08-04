@@ -7,20 +7,19 @@ import (
 
 	"github.com/IBM/sarama"
 
-	cfg "payments-service/init/config"
+	"payments-service/init/config"
 )
 
 type KafkaProducer struct {
 	producer sarama.AsyncProducer
 }
 
-func NewKafkaProducer() (*KafkaProducer, error) {
-	config := sarama.NewConfig()
+func NewKafkaProducer(cfg *config.Config) (*KafkaProducer, error) {
+	kafkaConfig := sarama.NewConfig()
 
-	config.Version = sarama.V2_6_0_0
-	config.Producer.Partitioner = sarama.NewRandomPartitioner
-	config.Producer.RequiredAcks = sarama.WaitForAll
-	producer, err := sarama.NewAsyncProducer(cfg.ServerConfig.KafkaBrokers, config)
+	kafkaConfig.Producer.Partitioner = sarama.NewRandomPartitioner
+	kafkaConfig.Producer.RequiredAcks = sarama.WaitForAll
+	producer, err := sarama.NewAsyncProducer(cfg.KafkaBrokers, kafkaConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -30,12 +29,12 @@ func NewKafkaProducer() (*KafkaProducer, error) {
 	}, nil
 }
 
-func (p *KafkaProducer) PrepareMessage(message []byte) error {
-	logger.DebugF("message: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, message)
-	logger.DebugF("send to topic: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, cfg.ServerConfig.KafkaTopic)
+func (p *KafkaProducer) PrepareMessage(message []byte, cfg *config.Config) error {
+	logger.DebugF("prepare message: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, string(message))
+	logger.DebugF("sent to topic: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, cfg.KafkaTopic)
 
 	p.producer.Input() <- &sarama.ProducerMessage{
-		Topic: cfg.ServerConfig.KafkaTopic,
+		Topic: cfg.KafkaTopic,
 		Value: sarama.ByteEncoder(message),
 	}
 

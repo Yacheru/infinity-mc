@@ -2,12 +2,11 @@ package punishments
 
 import (
 	"fmt"
-	"punishments-service/internal/entities"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
 
-	"punishments-service/init/logger"
+	"punishments-service/internal/entities"
 	"punishments-service/pkg/util/constants"
 )
 
@@ -19,11 +18,9 @@ func NewPunishmentsRepo(db *sqlx.DB) *RepoPunishments {
 	return &RepoPunishments{db: db}
 }
 
-func (rp *RepoPunishments) GetPunishments(limit int, pType string) ([]entities.LbPunishments, error) {
+func (rp *RepoPunishments) GetPunishments(ctx *gin.Context, limit int, pType string) ([]entities.LbPunishments, error) {
 	var bans []entities.LbPunishments
 	offset := limit - 10
-
-	logger.Info(pType, logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryDatabase})
 
 	query := fmt.Sprintf(`
 		SELECT ln.uuid AS "victim.uuid", COALESCE(ln.name, 'Неизвестно') AS "victim.name", 
@@ -40,7 +37,7 @@ func (rp *RepoPunishments) GetPunishments(limit int, pType string) ([]entities.L
 		OFFSET ?`,
 		constants.LbBans, constants.LbPunishments, constants.LbVictims, constants.LbNames, constants.LbNames,
 	)
-	err := rp.db.Select(&bans, query, limit, offset)
+	err := rp.db.SelectContext(ctx.Request.Context(), &bans, query, limit, offset)
 
 	for i := range bans {
 		bans[i].ID = i + 1

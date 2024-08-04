@@ -63,7 +63,7 @@ func (h *PaymentsHandler) Accept(c *gin.Context) {
 		return
 	}
 
-	err = h.producer.PrepareMessage(message)
+	err = h.producer.PrepareMessage(message, &config.ServerConfig)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, "Failed to prepare message")
 

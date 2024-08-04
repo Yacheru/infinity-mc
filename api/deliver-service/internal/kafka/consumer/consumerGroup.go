@@ -16,8 +16,8 @@ import (
 func NewConsumerGroup(ctx context.Context, rcon *rcon.Conn) error {
 	config := sarama.NewConfig()
 
-	config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRoundRobin()}
-	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRange()}
+	config.Consumer.Offsets.Initial = sarama.OffsetNewest
 
 	consumerGroup, err := sarama.NewConsumerGroup(cfg.ServerConfig.KafkaBrokers, cfg.ServerConfig.KafkaConsumerGroup, config)
 	if err != nil {
@@ -32,9 +32,9 @@ func Subscribe(ctx context.Context, topic string, consumerGroup sarama.ConsumerG
 	consumer := NewConsumer(rc)
 
 	go func() {
-		logger.Info("Start consuming...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka})
+		logger.Info("consumer join the group...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka})
 		if err := consumerGroup.Consume(ctx, []string{topic}, consumer); err != nil {
-			logger.ErrorF("error consume: %v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, err.Error())
+			logger.ErrorF("error consume: %s", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryKafka}, err.Error())
 		}
 		if ctx.Err() != nil {
 			return

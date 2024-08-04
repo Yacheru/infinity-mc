@@ -9,9 +9,8 @@ dist-ssr
 api/*/*.yml
 api/*/.data
 api/*/kafka-data
-configs/*/*.yml
+configs
 api/*/build
-docker-compose
 
 # Logs
 logs

@@ -24,7 +24,7 @@ func NewRCON(rcon *rcon.Conn) Deliver {
 
 func (r *RCON) DeliverService(nickname, service, duration string) error {
 	command := fmt.Sprintf("lp user %s parent addtemp %s %smo", nickname, service, duration)
-	log := fmt.Sprintf("Service '%s' delivered for '%s' with duration '%s month'", service, nickname, duration)
+	log := fmt.Sprintf("service %s delivered for %s with duration %s month", service, nickname, duration)
 
 	_, err := r.rcon.Execute(command)
 	_, _ = r.rcon.Execute("say " + log)
@@ -32,8 +32,7 @@ func (r *RCON) DeliverService(nickname, service, duration string) error {
 		return err
 	}
 
-	logger.InfoF(log,
-		logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryRCON}, service, nickname, duration)
+	logger.Info(log, logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryRCON})
 
 	return nil
 }

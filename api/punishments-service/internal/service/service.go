@@ -1,21 +1,22 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"punishments-service/internal/entities"
 	"punishments-service/internal/repository"
-	ps "punishments-service/internal/service/punishments"
+	"punishments-service/internal/service/punishments"
 )
 
 type PunishmentsService interface {
-	GetPunishments(limit int, pType string) ([]entities.LbPunishments, error)
+	GetPunishments(ctx *gin.Context, limit int, pType string) ([]entities.LbPunishments, error)
 }
 
 type Service struct {
 	PunishmentsService
 }
 
-func NewService(r *repository.Repository) *Service {
+func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		PunishmentsService: ps.NewPunishmentsService(r.PunishmentsRepository),
+		PunishmentsService: punishments.NewPunishmentsService(repo.PunishmentsRepository),
 	}
 }

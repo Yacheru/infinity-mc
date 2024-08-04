@@ -1,3 +1,3 @@
 DROP TABLE users_payments;
 
-DROP TABLE payments_history
+DROP TABLE payments_history;
