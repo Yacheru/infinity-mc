@@ -11,23 +11,23 @@ import (
 )
 
 type Client struct {
-	client    http.Client
+	client    *http.Client
 	account   string
 	secretKey string
 }
 
 func NewClient(account, secretKey string) *Client {
 	return &Client{
-		client:    http.Client{},
+		client:    new(http.Client),
 		account:   account,
 		secretKey: secretKey,
 	}
 }
 
 func (c *Client) makeRequest(method string, endpoint string, body []byte) (*http.Response, error) {
-	uri := fmt.Sprintf("%s%s", constants.YooKassa, endpoint)
+	url := fmt.Sprintf("%s%s", constants.YooKassa, endpoint)
 
-	req, err := http.NewRequest(method, uri, bytes.NewBuffer(body))
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}

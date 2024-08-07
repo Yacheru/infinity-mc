@@ -5,12 +5,12 @@ import (
 )
 
 type Response struct {
-	Status  int    `json:"status"`
-	Message string `json:"message,omitempty"`
-	Data    any    `json:"data,omitempty"`
+	Status  int         `json:"status"`
+	Message string      `json:"message,omitempty"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
-func NewSuccessResponse(c *gin.Context, statusCode int, message string, data any) {
+func NewSuccessResponse(c *gin.Context, statusCode int, message string, data interface{}) {
 	c.AbortWithStatusJSON(statusCode, Response{
 		Status:  statusCode,
 		Message: message,

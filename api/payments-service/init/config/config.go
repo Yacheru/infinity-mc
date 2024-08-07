@@ -18,8 +18,8 @@ type Config struct {
 	YKassaID   string `mapstructure:"YKASSA_ID"`
 	YKassaPass string `mapstructure:"YKASSA_PASS"`
 
-	KafkaBrokers []string `mapstructure:"KAFKA_BROKERS"`
-	KafkaTopic   string   `mapstructure:"KAFKA_TOPIC"`
+	KafkaBroker string `mapstructure:"KAFKA_BROKER"`
+	KafkaTopic  string `mapstructure:"KAFKA_TOPIC"`
 
 	PSQLDriver string `mapstructure:"POSTGRES_DRIVER"`
 	PSQLURL    string `mapstructure:"POSTGRES_URL"`

@@ -19,7 +19,7 @@ func NewKafkaProducer(cfg *config.Config) (*KafkaProducer, error) {
 
 	kafkaConfig.Producer.Partitioner = sarama.NewRandomPartitioner
 	kafkaConfig.Producer.RequiredAcks = sarama.WaitForAll
-	producer, err := sarama.NewAsyncProducer(cfg.KafkaBrokers, kafkaConfig)
+	producer, err := sarama.NewAsyncProducer([]string{cfg.KafkaBroker}, kafkaConfig)
 	if err != nil {
 		return nil, err
 	}

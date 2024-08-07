@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"github.com/sirupsen/logrus"
+	"os/signal"
 	"payments-service/internal/server"
+	"syscall"
 
 	"payments-service/init/config"
 	"payments-service/init/logger"
@@ -17,11 +20,22 @@ func init() {
 }
 
 func main() {
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	defer cancel()
+
 	app, err := server.NewServer()
 	if err != nil {
-		logger.Fatal(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
+		logger.Error(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
+
+		cancel()
 	}
 	if err := app.Run(); err != nil {
-		logger.Fatal(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
+		logger.Error(err.Error(), logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
+
+		cancel()
 	}
+
+	<-ctx.Done()
+
+	logger.Info("server exiting", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
 }

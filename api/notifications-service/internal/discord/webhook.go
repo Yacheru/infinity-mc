@@ -3,9 +3,13 @@ package discord
 import (
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/webhook"
+	"github.com/sirupsen/logrus"
+
 	"notifications-service/init/config"
+	"notifications-service/init/logger"
 	"notifications-service/internal/entities"
 	"notifications-service/internal/utils"
+	"notifications-service/pkg/constants"
 )
 
 type Sender interface {
@@ -33,6 +37,8 @@ func (wh *Webhook) SendNotification(msg *entities.Message) error {
 	if err != nil {
 		return err
 	}
+
+	logger.Debug("message sent successfully", logrus.Fields{constants.LoggerCategory: constants.DiscordCategory})
 
 	return nil
 }

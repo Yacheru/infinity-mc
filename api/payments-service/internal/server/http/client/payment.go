@@ -45,10 +45,11 @@ func (p *PaymentHandler) parsePaymentResponse(resp *http.Response) (*entities.Pa
 		return nil, err
 	}
 
-	paymentResponse := entities.Payment{}
-	err = json.Unmarshal(responseBytes, &paymentResponse)
+	var paymentResponse = new(entities.Payment)
+	err = json.Unmarshal(responseBytes, paymentResponse)
 	if err != nil {
 		return nil, err
 	}
-	return &paymentResponse, nil
+
+	return paymentResponse, nil
 }

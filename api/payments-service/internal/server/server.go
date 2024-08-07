@@ -1,16 +1,11 @@
 package server
 
 import (
-	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"payments-service/internal/server/http/middlewares"
 	"payments-service/internal/server/http/routes"
-	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +23,7 @@ type Server struct {
 }
 
 func NewServer() (*Server, error) {
-	kafkaProducer, err := producer.NewKafkaProducer()
+	kafkaProducer, err := producer.NewKafkaProducer(&config.ServerConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -53,32 +48,12 @@ func NewServer() (*Server, error) {
 }
 
 func (s *Server) Run() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 	go func() {
 		logger.InfoF("success to listen and serve on :%d port", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer}, config.ServerConfig.APIPort)
 		if err := s.HttpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("Failed to listen and serve: %+v", err)
+			logger.ErrorF("Failed to listen and serve: %+v", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer}, err)
 		}
 	}()
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-	<-quit
-
-	logger.Info("shutdown server in 5 seconds...", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
-
-	if err := s.HttpServer.Shutdown(ctx); err != nil {
-		logrus.Errorf("error when shutdown http server: %v", err)
-
-		return err
-	}
-
-	<-ctx.Done()
-	logger.Info("timeout of 5 seconds.", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
-	logger.Info("server exiting", logrus.Fields{constants.LoggerCategory: constants.LoggerCategoryServer})
 
 	return nil
 }
