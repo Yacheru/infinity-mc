@@ -1,7 +1,0 @@
-services:
-  punishments-service:
-    container_name: punishments-service
-    user: root
-    build:
-      context: .
-      dockerfile: Dockerfile
