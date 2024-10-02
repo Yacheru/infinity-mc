@@ -15,3 +15,4 @@
 - Сервис новостей: https://github.com/Yacheru/news-service (WIP)
 - Сервис обработки платежей: https://github.com/Yacheru/payments-service
 - Сервис уведомлений о покупках: https://github.com/Yacheru/notifications-service
+- Сервис архивации игровых сообщений: https://github.com/Yacheru/websocket-chat-service
