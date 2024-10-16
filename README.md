@@ -8,3 +8,10 @@
 ### Дизайн системы: 
 
 ![](design/image.png)
+
+### Ссылки на Backend Сервисы:
+- Сервис доставки услуг: https://github.com/Yacheru/deliver-service
+- Сервис просмотра игровых наказаний: https://github.com/Yacheru/punishments-service
+- Сервис новостей: https://github.com/Yacheru/news-service (WIP)
+- Сервис обработки платежей: https://github.com/Yacheru/payments-service
+- Сервис уведомлений о покупках: https://github.com/Yacheru/notifications-service

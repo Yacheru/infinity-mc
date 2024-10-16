@@ -3,7 +3,6 @@ import React, {useEffect, useRef, useState} from "react"
 import {useTranslation} from "react-i18next"
 
 import data from "../../../../data.json"
-import cfg from "../../../../config.json"
 
 import * as axios from '../../../api/axios/requests'
 
@@ -23,7 +22,7 @@ export default function Form({ item }) {
     const [nicknameError, setNicknameError] = useState(t('components.forms.forms.nicknameErrors.empty'))
     const [emailError, setEmailError] = useState(t('components.forms.forms.emailErrors.empty'))
     const [formValid, setFormValid] = useState(false)
-    const [duration, setDuration] = useState(0)
+    const [duration, setDuration] = useState(15552000)
 
     useEffect(() => {
         if (emailError || nicknameError || checkbox) {
@@ -60,11 +59,7 @@ export default function Form({ item }) {
     }
 
     const checkboxHandler = (e) => {
-        if (e.target.checked) {
-            setCheckbox(false)
-        } else {
-            setCheckbox(true)
-        }
+        setCheckbox(!e.target.checked)
     }
 
     const blurHandler = (e) => {
@@ -77,21 +72,10 @@ export default function Form({ item }) {
     }
 
     const submitForm = async () => {
-        const price = {
-            0: '169',
-            1: '369',
-            2: '690',
-        }
+        const price = data[item]['costs'][`${duration}`][1]
 
-        let dur = '6'
+        const paymentResponse = await axios.createPayment(price, email, item, nickname, duration)
 
-        if (price[duration] === '169' && item === 'hronon') {
-            dur = '1'
-        } else if (price[duration] === '369') {
-            dur = '3'
-        }
-
-        const paymentResponse = await axios.createPayment(nickname, email, price, duration, item, dur)
         return window.open(paymentResponse.data['confirmation']['confirmation_url'])
     }
 
@@ -125,13 +109,13 @@ export default function Form({ item }) {
                 </label>
             </fieldset>
             <div className={'modal__durations flex'}>
-            {Array.from({length: Object.keys(data[item].costs).length}, (_, i) => (
-                <div className={`modal__duration flex bgc-1 b br10 ${duration === i ? 'duration-active' : ''}`} key={i} onClick={() => setDuration(i)}>
+            {Array.from({length: Object.keys(data[item]['costs']).length}, (_, i) => (
+                <div className={`modal__duration flex bgc-1 b br10 ${duration === data[item]['durations'][i] ? 'duration-active' : ''}`} key={i} onClick={() => setDuration(data[item]['durations'][i])}>
                     <div className={`modal__duration-checkbox`}></div>
                     <div className={'modal__duration-text flex'}>
-                        <p>{ data[item].costs[`${i + 1}`][1] }</p>
+                        <p>{ data[item]['costs'][`${data[item]['durations'][i]}`][1] }₽</p>
                         <span>/</span>
-                        <p>{ data[item].costs[`${i + 1}`][0] }</p>
+                        <p>{ data[item]['costs'][`${data[item]['durations'][i]}`][0] }</p>
                     </div>
                 </div>
             ))}

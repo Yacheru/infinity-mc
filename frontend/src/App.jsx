@@ -13,6 +13,7 @@ const Root = lazy(() => import('./pages/root/Root.jsx'))
 const Term = lazy(() => import('./pages/terms/Terms.jsx'))
 const Punishments = lazy(() => import('./pages/punishments/Punishments.jsx'))
 const Stats = lazy(() => import('./pages/stats/Stats.jsx'))
+const News = lazy(() => import('./pages/news/News.jsx'))
 
 export default function App() {
     return (
@@ -47,6 +48,14 @@ export default function App() {
                 element={
                     <Suspense fallback={<Loading />}>
                         <Stats />
+                    </Suspense>
+                }
+            />
+            <Route
+                path={'/news'}
+                element={
+                    <Suspense fallback={<Loading />}>
+                        <News />
                     </Suspense>
                 }
             />

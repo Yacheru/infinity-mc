@@ -1,0 +1,17 @@
+.new-container {
+    height: 90%;
+}
+
+.news-inner-container {
+    padding-top: 20px;
+    justify-content: space-between;
+}
+
+.news-filters {
+    width: 25%;
+}
+
+.news-main {
+    width: 75%;
+    margin-left: 10px;
+}
