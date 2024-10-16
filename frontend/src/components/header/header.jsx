@@ -32,7 +32,11 @@ export default function Header() {
                     </li>
                     |
                     <li className={`header__item ${selected === '/stats' ? 'header-selected' : ''}`}>
-                        <a className={'header__item-link punishments'} href={'/stats'}>Статистика</a>
+                        <a className={'header__item-link stats'} href={'/stats'}>Статистика</a>
+                    </li>
+                    |
+                    <li className={`header__item ${selected === '/news' ? 'header-selected' : ''}`}>
+                        <a className={'header__item-link news'} href={'/news'}>Новости</a>
                     </li>
                 </ul>
             </nav>
