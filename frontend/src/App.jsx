@@ -51,6 +51,14 @@ export default function App() {
                     </Suspense>
                 }
             />
+            <Route
+                path={'/news'}
+                element={
+                    <Suspense fallback={<Loading />}>
+                        <News />
+                    </Suspense>
+                }
+            />
         </FaroRoutes>
     );
 }
