@@ -27,12 +27,8 @@ export default function Header() {
                         <a className={'header__item-link docs'} href={'https://forum.infinity-mc.ru'}>Форум</a>
                     </li>
                     |
-                    <li className={`header__item ${selected === '/punishments' ? 'header-selected' : ''}`}>
-                        <a className={'header__item-link punishments'} href={'/punishments?category=bans'}>Наказания</a>
-                    </li>
-                    |
-                    <li className={`header__item ${selected === '/stats' ? 'header-selected' : ''}`}>
-                        <a className={'header__item-link stats'} href={'/stats'}>Статистика</a>
+                    <li className={`header__item ${selected === '/p' ? 'header-selected' : ''}`}>
+                        <a className={'header__item-link punishments'} href={'/p?category=bans'}>Наказания</a>
                     </li>
                     |
                     <li className={`header__item ${selected === '/news' ? 'header-selected' : ''}`}>

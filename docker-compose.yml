@@ -1,75 +1,119 @@
 services:
-#  traefik:
-#    container_name: traefik
-#    image: traefik:v3.0
-#    ports:
-#      - "80:80"
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - ./configs/traefik:/etc/traefik
-#      - ./configs/traefik:/acme.json
-#    depends_on:
-#      - deliver-service
-#      - payments-service
-#      - punishments-service
-#    networks:
-#      - traefik
+  traefik:
+    user: root
+    container_name: traefik
+    image: traefik:v3.0
+    ports:
+      - "80:80"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./configs/traefik/dev/traefik.yml:/traefik.yml:ro
+      - ./configs/traefik/dev/host.yml:/host.yml:ro
+      - ./configs/traefik/dev/logs:/var/log/traefik
+#      - ./configs/traefik/dev/acme.json:/acme.json
+#    environment:
+#      REGRU_USERNAME: ${REGRU_USERNAME}
+#      REGRU_PASSWORD: ${REGRU_PASSWORD}
+    depends_on:
+      - frontend
+    networks:
+      - traefik
 
-#  frontend:
-#    container_name: frontend
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#    networks:
-#      - traefik
+  frontend:
+    user: root
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - traefik
 
-#  notifications-service:
-#    container_name: notifications
-#    user: root
-#    build:
-#      context: ./api/notifications-service
-#      dockerfile: ./deploy/Dockerfile
-#    depends_on:
-#      - kafka-1
-#    networks:
-#      - traefik
-#
-#  deliver-service:
-#    container_name: deliver
-#    user: root
-#    build:
-#      context: ./api/deliver-service
-#      dockerfile: ./deploy/Dockerfile
-#    depends_on:
-#      - kafka-ui
-#    networks:
-#      - traefik
+  payments-service:
+    user: root
+    container_name: payments-service
+    ports:
+      - 81:81
+    build:
+      context: ./api/payments-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      - kafka-ui
+    networks:
+      - traefik
 
-#  payments-service:
-#    user: root
-#    container_name: payments
-#    expose:
-#      - 9092
-#    build:
-#      context: ./api/payments-service
-#      dockerfile: ./deploy/Dockerfile
-#    depends_on:
-#      - kafka-ui
-#    networks:
-#      - traefik
+  punishments-service:
+    container_name: punishments-service
+    user: root
+    ports:
+      - 82:82
+    build:
+      context: ./api/punishments-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_started
+    networks:
+      - traefik
 
-#  punishments-service:
-#    container_name: punishments-service
-#    user: root
-#    build:
-#      context: ./api/punishments-service
-#      dockerfile: ./deploy/Dockerfile
-#    depends_on:
-#      - mysql
-#    networks:
-#      - traefik
+  news-service:
+    user: root
+    container_name: news-service
+    ports:
+      - 83:83
+    build:
+      context: ./api/news-service
+      dockerfile: ./deploy/Dockerfile
+    networks:
+      - traefik
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started
 
+  websocket-chat-service:
+    container_name: websocket-chat-service
+    user: root
+    build:
+      context: ./api/websocket-chat-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      redis:
+        condition: service_started
+      scylladb:
+        condition: service_started
+    networks:
+      - traefik
+
+  notifications-service:
+    container_name: notification-service
+    user: root
+    build:
+      context: ./api/notifications-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      - kafka-1
+    networks:
+      - traefik
+
+  deliver-service:
+    container_name: deliver-service
+    user: root
+    build:
+      context: ./api/deliver-service
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      - kafka-ui
+    networks:
+      - traefik
+
+  # deliver-service
+  # payments-service
   zookeeper:
+    user: root
     image: zookeeper
     ports:
       - "2181:2181"
@@ -78,7 +122,10 @@ services:
     networks:
       - traefik
 
+  # deliver-service
+  # payments-service
   kafka-ui:
+    user: root
     image: provectuslabs/kafka-ui:latest
     ports:
       - "8080:8080"
@@ -92,7 +139,10 @@ services:
     networks:
       - traefik
 
+  # deliver-service
+  # payments-service
   kafka-1:
+    user: root
     image: wurstmeister/kafka
     ports:
       - "9095:9094"
@@ -117,18 +167,113 @@ services:
     networks:
       - traefik
 
-#  mysql:
-#    container_name: mysql
-#    image: mysql:oraclelinux9
-#    environment:
-#      MYSQL_DATABASE: ${MYSQL_DATABASE}
-#      MYSQL_USER: ${MYSQL_USER}
-#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-#      MYSQL_ALLOW_EMPTY_PASSWORD: false
-#    networks:
-#      - traefik
-#    volumes:
-#      - ./configs/mysql/data:/var/lib/mysql/
+  # websocket-chat-service
+  scylladb:
+    user: root
+    container_name: scylladb
+    image: scylladb/scylla:6.0
+    ports:
+      - 9042:9042
+    volumes:
+      - type: volume
+        source: scylladb
+        target: /var/lib/scylla
+        volume:
+          nocopy: true
+    networks:
+      - traefik
+
+  # news-service
+  # websocket-chat-service
+  redis:
+    user: root
+    image: bitnami/redis:7.4.0
+    container_name: redis
+    ports:
+      - 6379:6379
+    environment:
+      REDIS_DATABASE: ${REDIS_DATABASE:?error}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?error}
+    volumes:
+      - ./configs/redis-data:/bitnami/redis/data
+    networks:
+      - traefik
+
+  # punishments-service
+  mysql:
+    user: root
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: ${MYSQL_USER:?error}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?error}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?error}
+      MYSQL_ROOT_PASSWORD: string
+    volumes:
+      - ./configs/mysql:/var/lib/mysql
+    networks:
+      - traefik
+
+  # news-service
+  postgres:
+    user: root
+    image: bitnami/postgresql:16
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD:?error}
+      POSTGRESQL_USERNAME: ${POSTGRESQL_USERNAME:?error}
+      POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE:?error}
+      POSTGRESQL_POSTGRES_PASSWORD: ${POSTGRESQL_POSTGRES_PASSWORD:?error}
+    volumes:
+      - ./configs/pg-data:/bitnami/postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRESQL_USERNAME} -d ${POSTGRESQL_DATABASE}'" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+    networks:
+      - traefik
+
+  # news-service
+  elasticsearch:
+    user: root
+    image: bitnami/elasticsearch:8.15.0
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+    environment:
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD:?error}
+    volumes:
+      - ./configs/elastic-data:/bitnami/elasticsearch
+    networks:
+      - traefik
+
+  # news-service
+  logstash:
+    user: root
+    image: bitnami/logstash:8.7.0
+    container_name: logstash
+    ports:
+      - 9600:9600
+    environment:
+      LOGSTASH_ELASTICSEARCH_HOST: ${ELASTICSEARCH_CLIENT:?error}
+      LOGSTASH_PIPELINE_CONF_FILENAME: sync.conf
+    depends_on:
+      - elasticsearch
+      - postgres
+    volumes:
+      - ./configs/logstash/data:/usr/share/logstash/data
+      - ./configs/logstash/bin/postgres-42.6.0.jar:/opt/bitnami/logstash/logstash-core/lib/jars/postgres-42.6.0.jar
+      - ./configs/logstash/config:/bitnami/logstash/pipeline
+    networks:
+      - traefik
+
+volumes:
+  scylladb:
 
 networks:
   traefik:

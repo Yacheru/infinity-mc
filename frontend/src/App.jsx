@@ -36,18 +36,10 @@ export default function App() {
             />
             <Route
                 exact
-                path='/punishments'
+                path='/p'
                 element={
                     <Suspense fallback={<Loading />}>
                         <Punishments />
-                    </Suspense>
-                }
-            />
-            <Route
-                path='/stats'
-                element={
-                    <Suspense fallback={<Loading />}>
-                        <Stats />
                     </Suspense>
                 }
             />

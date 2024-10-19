@@ -17,7 +17,7 @@ export default function Punishment() {
     const [punishments, setPunishments] = useState([])
     const type = useLocation().search.split('=')[1]
 
-    useEffect(() => {
+    useEffect( () => {
         async function getPunishments() {
             try {
                 const punishmentsResponse = await axios.getPunishments(LIMIT, type)
@@ -49,8 +49,7 @@ export default function Punishment() {
                 </tr>
                 </thead>
                 {
-                    loading ? <Loading /> :
-                        status === 200 ? <BansBody punishments={punishments}/> : <NoBans location={location} status={status}/>
+                    loading ? <Loading /> : status === 200 ? <BansBody punishments={punishments}/> : <NoBans location={location} status={status}/>
                 }
             </table>
         </main>
