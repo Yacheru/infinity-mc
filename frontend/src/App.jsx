@@ -36,7 +36,7 @@ export default function App() {
             />
             <Route
                 exact
-                path='/punishments'
+                path='/p'
                 element={
                     <Suspense fallback={<Loading />}>
                         <Punishments />
@@ -44,10 +44,10 @@ export default function App() {
                 }
             />
             <Route
-                path='/stats'
+                path={'/news'}
                 element={
                     <Suspense fallback={<Loading />}>
-                        <Stats />
+                        <News />
                     </Suspense>
                 }
             />

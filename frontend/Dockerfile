@@ -11,7 +11,6 @@ COPY . /infinitymc
 
 RUN yarn build
 
-
 FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
