@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-import App from "./App";
-import Load from "./Load.jsx";
+import App from "./App.js";
+import Load from "./Load.tsx";
 
 import '../18n.js'
 import '../faro.js'

@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next"
 
 import data from "../../../../data.json"
 
-import * as axios from '../../../api/axios/requests'
+import * as axios from '../../api/axios/requests'
 
 import './forms.css'
 import '../../../pages/pages.css'

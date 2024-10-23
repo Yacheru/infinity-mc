@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import BansBody from "./punishmentsBody.jsx";
 import NoBans from "./noPunishments.jsx";
-import Loading from '../../../Load.jsx'
+import Loading from '../../../Load.tsx'
 
 import * as axios from '../../../api/axios/requests';
 
