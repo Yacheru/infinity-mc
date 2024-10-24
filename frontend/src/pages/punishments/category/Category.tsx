@@ -7,7 +7,6 @@ export default function Category() {
     const location = useLocation()
     let locate = location.search.split('=')[1]
 
-
     return (
         <div className={'category-box flex w100'}>
             <Link to={'/p?category=bans'} className={`category-box-item category-bans ${locate === 'bans' ? 'selected ' : ''}bgc-1 b br20 flex center`}>
