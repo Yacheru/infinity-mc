@@ -1,9 +1,10 @@
-import Header from '../../components/header/header.jsx'
-import Main from './components/main/main.jsx'
-import Aside from './components/aside/aside.jsx'
-import Footer from './components/footer/footer.jsx'
+import Header from '../../components/header/header.js'
+import Main from './components/main/main.js'
+import Aside from './components/aside/aside.js'
+import Footer from './components/footer/footer.js'
 
 import './Root.css'
+import React from 'react'
 
 export default function Root() {
     return (

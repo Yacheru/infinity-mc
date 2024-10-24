@@ -1,5 +1,6 @@
 import './Stats.css'
-import Header from "../../components/header/header.jsx";
+import Header from "../../components/header/header.js";
+import React from 'react';
 
 export default function Stats() {
     return (

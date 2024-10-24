@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import './header.css'
+import React from "react";
 
 export default function Header() {
     const [selected, setSelected] = useState('/')

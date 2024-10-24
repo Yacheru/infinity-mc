@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { calculateTimeLeft, calculateTimeDescription } from './calculateTime.jsx'
+import { calculateTimeLeft, calculateTimeDescription } from './calculateTime.tsx'
 
 const PLAYER_HEAD_URL = 'https://visage.surgeplay.com/face/32/'
 const CONSOLE_UUID = '00000000-0000-0000-0000-000000000000'

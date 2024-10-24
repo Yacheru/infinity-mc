@@ -1,8 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import BansBody from "./punishmentsBody.jsx";
-import NoBans from "./noPunishments.jsx";
+import BansBody from "./punishmentsBody.tsx";
+import NoBans from "./noPunishments.js";
 import Loading from '../../../Load.tsx'
 
 import * as axios from '../../../api/axios/requests';

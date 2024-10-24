@@ -1,3 +1,5 @@
+import React from "react";
+
 export function calculateTimeLeft(endTime) {
     const currentTime = new Date() / 1000;
     if (endTime === 0) {

@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function NavBuy({ valid }) {
     return (
         <div className={'modal__navbuy flex'}>

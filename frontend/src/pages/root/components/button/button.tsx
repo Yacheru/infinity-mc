@@ -1,9 +1,10 @@
-import Modal from '../../../../components/modal/modal.jsx'
+import Modal from '../../../../components/modal/modal.js'
 import data from '../../../../../data.json'
 
 import { useState } from 'react'
 
 import './button.css'
+import React from 'react'
 
 
 export default function Button({ item }) {

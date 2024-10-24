@@ -1,5 +1,6 @@
-import Main from "./components/main/main.jsx";
-import Header from "../../components/header/header.jsx";
+import Main from "./components/main/main.js";
+import Header from "../../components/header/header.js";
+import React from "react";
 
 export default function Terms() {
     return (

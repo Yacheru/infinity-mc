@@ -1,8 +1,8 @@
 import React from 'react';
 import data from '../../../data.json'
 
-import Form from "./forms/forms.jsx";
-import Description from "./blocks/descriptions.jsx";
+import Form from "./forms/forms.js";
+import Description from "./blocks/descriptions.js";
 
 import './modal.css'
 

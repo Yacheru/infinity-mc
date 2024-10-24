@@ -1,7 +1,8 @@
-import Button from '../button/button.jsx'
+import Button from '../button/button.js'
 
 import './main.css'
 import '../../../pages.css'
+import React from 'react'
 
 export default function Main() {
     return (
