@@ -1,28 +1,37 @@
+import { IData, Durations } from "$types/data";
+import { IPaymentsService } from "$types/api";
+import { IForm } from "$types/modal";
 
-import React, {useEffect, useRef, useState} from "react"
-import {useTranslation} from "react-i18next"
+import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
-import data from "../../../../data.json"
+import PaymentsService from "@api/axios/entities/payments";
+import data from "@config/data.json";
+import { AxiosResponse } from "axios"
 
-import * as axios from '../../api/axios/requests'
+import '@styles/components/modal/forms.css';
+import '@styles/pages/pages.css';
 
-import './forms.css'
-import '../../../pages/pages.css'
+const typedData: IData = data as IData
 
-export default function Form({ item }) {
+const payService: IPaymentsService = new PaymentsService()
+
+export default function Form({ item }: IForm) {
     const { t } = useTranslation()
 
     const checkboxRef = useRef(null)
 
-    const [nickname, setNickname] = useState('')
-    const [email, setEmail] = useState('')
-    const [checkbox, setCheckbox] = useState(true)
-    const [emailDirty, setEmailDirty] = useState(false)
-    const [nicknameDirty, setNicknameDirty] = useState(false)
-    const [nicknameError, setNicknameError] = useState(t('components.forms.forms.nicknameErrors.empty'))
-    const [emailError, setEmailError] = useState(t('components.forms.forms.emailErrors.empty'))
-    const [formValid, setFormValid] = useState(false)
-    const [duration, setDuration] = useState(15552000)
+    const [nickname, setNickname] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [placeholder, setPlaceholder] = useState<string>('Продолжить')
+    const [checkbox, setCheckbox] = useState<boolean>(true)
+    const [emailDirty, setEmailDirty] = useState<boolean>(false)
+    const [nicknameDirty, setNicknameDirty] = useState<boolean>(false)
+    const [nicknameError, setNicknameError] = useState<string>(t('components.forms.forms.nicknameErrors.empty'))
+    const [emailError, setEmailError] = useState<string>(t('components.forms.forms.emailErrors.empty'))
+    const [formValid, setFormValid] = useState<boolean>(false)
+    const [duration, setDuration] = useState<Durations>("15552000")
 
     useEffect(() => {
         if (emailError || nicknameError || checkbox) {
@@ -32,7 +41,7 @@ export default function Form({ item }) {
         }
     }, [emailError, nicknameError, checkbox])
 
-    const nicknameHandler = (e) => {
+    const nicknameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNickname(e.target.value)
         if (e.target.value.length < 3) {
             setNicknameError(t('components.forms.forms.nicknameErrors.short'))
@@ -46,7 +55,7 @@ export default function Form({ item }) {
         }
     }
 
-    const emailHandler = (e) => {
+    const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value)
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if (!re.test(String(e.target.value).toLowerCase())) {
@@ -58,11 +67,11 @@ export default function Form({ item }) {
         }
     }
 
-    const checkboxHandler = (e) => {
-        setCheckbox(!e.target.checked)
+    const checkboxHandler = (e: React.MouseEvent<HTMLInputElement>) => {
+        setCheckbox(!e.currentTarget.checked)
     }
 
-    const blurHandler = (e) => {
+    const blurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
         switch (e.target.name) {
             case 'email':
                 return setEmailDirty(true)
@@ -72,11 +81,30 @@ export default function Form({ item }) {
     }
 
     const submitForm = async () => {
-        const price = data[item]['costs'][`${duration}`][1]
+        setFormValid(false)
+        setPlaceholder("Ожидайте...")
 
-        const paymentResponse = await axios.createPayment(price, email, item, nickname, duration)
+        try {
+            const costs = typedData[item].costs;
+            const price: string = typedData[item].costs[duration as keyof typeof costs][1]
+            const payResponse: AxiosResponse = await payService.createPayment(price, email, item, nickname, duration)
 
-        return window.open(paymentResponse.data['confirmation']['confirmation_url'])
+            return window.open(payResponse.data['confirmation']['confirmation_url'])
+        } catch (e) {
+            setPlaceholder("Ошибка запроса.")
+
+            toast.error("Ошибка выполнения запроса...", {
+                icon: "❌",
+                style: {
+                    color: "whitesmoke",
+                    background: '#303030',
+                    borderRadius: '10px',
+                },
+                duration: 1500,
+            })
+        } finally {
+            setTimeout(() => window.location.reload(), 1000)
+        }
     }
 
     return (
@@ -109,19 +137,22 @@ export default function Form({ item }) {
                 </label>
             </fieldset>
             <div className={'modal__durations flex'}>
-            {Array.from({length: Object.keys(data[item]['costs']).length}, (_, i) => (
-                <div className={`modal__duration flex bgc-1 b br10 ${duration === data[item]['durations'][i] ? 'duration-active' : ''}`} key={i} onClick={() => setDuration(data[item]['durations'][i])}>
+            {Array.from({length: Object.keys(typedData[item].costs).length}, (_, i) => (
+                <div
+                    className={`modal__duration flex bgc-1 b br10 ${duration === typedData[item].durations[i] ? 'duration-active' : ''}`}
+                    key={i}
+                    onClick={() => setDuration(typedData[item].durations[i])}>
                     <div className={`modal__duration-checkbox`}></div>
                     <div className={'modal__duration-text flex'}>
-                        <p>{ data[item]['costs'][`${data[item]['durations'][i]}`][1] }₽</p>
+                        <p>{ duration }₽</p>
                         <span>/</span>
-                        <p>{ data[item]['costs'][`${data[item]['durations'][i]}`][0] }</p>
+                        <p>{ duration }</p>
                     </div>
                 </div>
             ))}
             </div>
             <div className={'modal__navbuy flex'}>
-                <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={e => submitForm(e)}>Продолжить</button>
+                <button disabled={!formValid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'} onClick={() => submitForm()}>{placeholder}</button>
                 <div className={'modal__checkbox-box flex'}>
                     <div className={'modal__checkbox-item'}>
                         <label className={'modal__checkbox-label flex h100'} htmlFor={'checkbox'}>

@@ -1,17 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'node:path';
 
 export default defineConfig({
-  plugins: [react()]
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@styles': path.resolve(__dirname, 'src/styles'),
+      '@api': path.resolve(__dirname, 'src/api'),
+      '@config': path.resolve(__dirname, 'src/config'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '$types': path.resolve(__dirname, 'src/types'),
+    }
+  }
 })
 
-// faroUploader({
-//   appName: 'undefined',
-//   endpoint: 'https://faro-api-prod-eu-north-0.grafana.net/faro/api/v1',
-//   appId: 'undefined',
-//   stackId: '984329',
-//   // instructions on how to obtain your API key are in the documentation
-//   // https://grafana.com/docs/grafana-cloud/monitor-applications/frontend-observability/sourcemap-upload-plugins/#obtain-an-api-key
-//   apiKey: faroApiKey,
-//   gzipContents: true,
-// })

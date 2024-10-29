@@ -1,5 +1,5 @@
 import React from 'react';
-import './main.css'
+import '../../../../styles/pages/terms/terms.css'
 import {useTranslation} from "react-i18next";
 
 export default function Main() {

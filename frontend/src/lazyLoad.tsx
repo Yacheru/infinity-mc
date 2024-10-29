@@ -1,8 +1,8 @@
 import React from 'react'
 
-import './load.css'
+import './styles/load.css'
 
-export default function Load() {
+export default function LazyLoad() {
     return (
         <>
             <div className={'container'}>

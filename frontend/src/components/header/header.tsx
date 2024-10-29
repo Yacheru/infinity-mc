@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import './header.css'
-import React from "react";
+import '@styles/components/header/header.css'
+
 
 export default function Header() {
     const [selected, setSelected] = useState('/')
+    // const [authenticated, setAuthenticated] = useState(false)
     let value = location.pathname
 
     useEffect(() => {
         setSelected(value)
+
+        // api request
     }, [value]);
 
     return (
@@ -30,12 +33,20 @@ export default function Header() {
                     |
                     <li className={`header__item ${selected === '/p' ? 'header-selected' : ''}`}>
                         <a className={'header__item-link punishments'} href={'/p?category=bans'}>Наказания</a>
+                    </li>
                     |
                     <li className={`header__item ${selected === '/news' ? 'header-selected' : ''}`}>
                         <a className={'header__item-link news'} href={'/news'}>Новости</a>
                     </li>
                 </ul>
             </nav>
+            <div className='header__auth'>
+                <ul className='header__auth__list'>
+                    <li className='header__auth-item header-login'>
+                        <a className='header__auth-item-link' href="/login">Войти</a>
+                    </li>
+                </ul>
+            </div>
         </header>
     )
 }

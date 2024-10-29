@@ -1,5 +1,5 @@
-import './footer.css'
-import '../../../pages.css'
+import '../../../../styles/pages/root/footer.css'
+import '../../../../styles/pages/pages.css'
 import React from 'react'
 
 export default function Footer() {

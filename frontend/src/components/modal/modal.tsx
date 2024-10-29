@@ -1,23 +1,29 @@
+import { IModal } from '$types/modal'
+import { IData } from '$types/data'
+
 import React from 'react';
-import data from '../../../data.json'
+import data from '@config/data.json'
 
 import Form from "./forms/forms.js";
 import Description from "./blocks/descriptions.js";
 
-import './modal.css'
+import '@styles/components/modal/modal.css'
 
-export default function Modal({active, setActive, modalType, item}) {
+const typedData: IData = data as IData
+
+export default function Modal({active, setActive, modalType, item}: IModal): React.ReactElement {
     const Component = modalType === 'about' ? Description : Form
-    let modalContent = '';
-    
-    modalContent = (
+    const title: string = typedData[item].title
+
+    let modalContent = (
         <div>
-            <header className={`modal__header ${item}`}>{ data[item].title }</header>
-            <hr className='modal__hr' size='3' color='whitesmoke'/>
+            <header className={`modal__header ${item}`}>{ title }</header>
+            <hr className='modal__hr' />
             <main className='modal__main'>
                 <Component item={item}/>
             </main>
-        </div>);
+        </div>
+    );
 
     return (
         <div className={active ? "modal flex center active" : "modal flex center"} onClick={() => setActive(false)}>

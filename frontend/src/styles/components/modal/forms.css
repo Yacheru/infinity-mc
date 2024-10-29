@@ -18,7 +18,7 @@
     transform: translate(-50%, -50%);
     width: 24px;
     height: 24px;
-    background: url("/root/username.svg");
+    background: url("../../../assets/root/username.svg");
     z-index: 1;
 }
 
@@ -30,7 +30,7 @@
     transform: translate(-50%, -50%);
     width: 24px;
     height: 24px;
-    background: url("/root/email.svg");
+    background: url("../../../assets/root/email.svg");
     z-index: 1;
 }
 

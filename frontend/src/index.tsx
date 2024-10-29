@@ -1,19 +1,16 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "solid-toast";
 
-import App from "./App.js";
-import Load from "./Load.tsx";
+import Router from "./routes.tsx";
 
-import '../18n.js'
-import '../faro.js'
+import '../i18next'
 
-import "./index.css";
+import "./styles/index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <BrowserRouter>
-        <React.Suspense fallback={<Load />}>
-            <App />
-        </React.Suspense>
+        <Router />
     </BrowserRouter>
 );

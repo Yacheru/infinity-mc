@@ -34,5 +34,7 @@
 }
 
 .modal__hr {
+    color: whitesmoke;
+    height: 3px;
     margin: 10px 0 10px 0;
 }

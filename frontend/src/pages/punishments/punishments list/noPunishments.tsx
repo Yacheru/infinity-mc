@@ -1,17 +1,28 @@
-const failed = {
-    'bans': ['банов', 'забанен'],
-    'mutes': ['мутов', 'замьючен'],
-    'warns': ['предупреждений', 'предупреждён']
+import React from "react";
+
+interface INoBans {
+    location: Location,
+    status: number | null,
 }
 
-export default function NoBans({ location, status }) {
+type Categories = "bans" | "mutes" | "warns"
+
+export default function NoBans({ location, status }: INoBans) {
+    const failed = {
+        "bans": ['банов', 'забанен'],
+        "mutes": ['мутов', 'замьючен'],
+        "warns": ['предупреждений', 'предупреждён']
+    }
+
     const handleError = () => {
-        let value = location.search.split('=')[1]
+        const value: string = location.search.split('=')[1]
+        const category = value ? (value as Categories) : null;
 
-        if (failed[value] === undefined) return `Неверно указанная категория😕`
-        if (status === 204) return `Ещё никто не ${ failed[value][1] }😏`
+        if (!category) return 'Категория не указана😐'
+        if (!failed[category]) return `Неверно указанная категория😕`
+        if (status === 204) return `Ещё никто не ${ failed[category][1] }😏`
 
-        return `не удалось получить список ${ failed[value][0] }😥`
+        return `не удалось получить список ${ failed[category][0] }😥`
     }
 
     return (

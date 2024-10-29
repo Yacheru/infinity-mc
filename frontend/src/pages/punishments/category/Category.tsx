@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-import './Category.css'
+import '../../../styles/pages/punishments/category.css'
 import React from "react";
 
 export default function Category() {

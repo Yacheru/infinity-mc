@@ -1,6 +1,7 @@
+import { INavBuy } from "$types/modal";
 import React from "react";
 
-export default function NavBuy({ valid }) {
+export default function NavBuy({ valid }: INavBuy) {
     return (
         <div className={'modal__navbuy flex'}>
             <button disabled={!valid} className={'modal__navbuy-button bgc-1 b br10'} type={'button'}>Продолжить</button>

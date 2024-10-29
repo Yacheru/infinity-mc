@@ -1,5 +1,5 @@
-import './aside.css'
-import '../../container.css'
+import '../../../../styles/pages/root/aside.css'
+import '../../../../styles/container.css'
 import React from 'react'
 
 export default function Aside() {

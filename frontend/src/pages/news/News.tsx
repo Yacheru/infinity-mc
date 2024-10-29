@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../components/header/header.js";
 
-import './news.css'
+import '../../styles/pages/news/news.css'
 
 export default function News() {
     return (

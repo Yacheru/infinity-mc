@@ -1,29 +1,33 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+import React from "react";
+
 import BansBody from "./punishmentsBody.tsx";
-import NoBans from "./noPunishments.js";
-import Loading from '../../../Load.tsx'
+import NoBans from "./noPunishments.tsx";
+import Loading from '../../../lazyLoad.tsx';
 
-import * as axios from '../../../api/axios/requests';
+import '@styles/pages/punishments/punishments.css';
+import {IPunishmentsService} from "$types/api";
+import PunishmentsService from "@api/axios/entities/punishments.ts";
 
-import './punishments.css'
+const LIMIT = "10"
 
-const LIMIT = 10
+const pService: IPunishmentsService = new PunishmentsService();
 
-export default function Punishment() {
+export default function PunishmentsList() {
     const [loading, setLoading] = useState(true)
-    const [status, setStatus] = useState(null)
+    const [status, setStatus] = useState<number | null>(null)
     const [punishments, setPunishments] = useState([])
     const type = useLocation().search.split('=')[1]
 
-    useEffect( () => {
-        async function getPunishments() {
+    useEffect(() => {
+        const getPunishments = async () => {
             try {
-                const punishmentsResponse = await axios.getPunishments(LIMIT, type)
-                setStatus(punishmentsResponse.status)
-                setPunishments(punishmentsResponse.data)
-            } catch (error) {
+                const resp = await pService.getPunishments(LIMIT, type)
+                setStatus(resp.status)
+                setPunishments(resp.data)
+            } catch (error: any) {
                 setStatus(error.response ? error.response.status : 500)
             } finally {
                 setLoading(false)
@@ -31,7 +35,7 @@ export default function Punishment() {
         }
 
         if (type === "bans" || type === "warns" || type === "mutes") {
-            getPunishments()
+            getPunishments().then()
         } else {
             setLoading(false)
         }

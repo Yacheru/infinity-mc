@@ -1,4 +1,4 @@
-import './Stats.css'
+import '../../styles/pages/stats/stats.css'
 import Header from "../../components/header/header.js";
 import React from 'react';
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-export function calculateTimeLeft(endTime) {
+export function calculateTimeLeft(endTime: number) {
     const currentTime = new Date() / 1000;
     if (endTime === 0) {
         return <span className={'br10 pd-8 forever'}>Навсегда</span>
