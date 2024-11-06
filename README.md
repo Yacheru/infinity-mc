@@ -5,10 +5,6 @@
 
 Ключевые технологии: Микросервесная архитектура, Golang, Gin, React.js, Kafka, Docker, MySQL, PostgreSQL, Redis
 
-### Дизайн системы: 
-
-![](design/image.png)
-
 ### Ссылки на Backend Сервисы:
 - Сервис доставки услуг: https://github.com/Yacheru/deliver-service
 - Сервис просмотра игровых наказаний: https://github.com/Yacheru/punishments-service
