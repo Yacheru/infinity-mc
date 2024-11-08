@@ -1,7 +1,10 @@
 ### Сайт игрового сервера
 
 Есть возможность: регистрироваться, покупать привилегии, просматривать новости, смотреть активные и прошедшие игровые наказания.
-Ключевые технологии: Микросервесная архитектура, Golang, Gin, React.js, Kafka, Docker, MySQL, PostgreSQL, Redis
+
+Технологии:
+— Golang, React.Js (MobX), Goose, Gin, Git, Docker/Docker-compose;
+— Redis, ScyllaDB, MySQL, MongoDB, PostgreSQL (pgx, sqlx), Kafka (Sarama).
 
 ### Ссылки на Backend Сервисы:
 - Сервис доставки услуг: https://github.com/Yacheru/deliver-service
