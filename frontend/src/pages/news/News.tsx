@@ -1,13 +1,13 @@
 import React from "react";
-import Header from "../../components/header/header.js";
+import Header from "@components/header/header.js";
 
-import '../../styles/pages/news/news.css'
+import '@styles/pages/news/news.css'
 
 export default function News() {
     return (
-        <>
+        <div className='container'>
             <Header />
-            <div className={'new-container'}>
+            <div className={'news-container'}>
                 <div className={'news-inner-container flex w100 h100'}>
                     <aside className={'b br20 bgc-1 news-filters h100'}>
                         <div className={'news-filters__list'}>
@@ -33,6 +33,6 @@ export default function News() {
                     </main>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

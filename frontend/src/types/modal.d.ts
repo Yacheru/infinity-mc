@@ -1,8 +1,10 @@
+import { CSSProperties, ReactNode } from 'react'
+
 export interface IModal {
     active: boolean;
     setActive: (active: boolean) => void;
-    modalType: string
-    item: Items
+    children?: ReactNode;
+    width?: number
 }
 
 export interface IDescription {

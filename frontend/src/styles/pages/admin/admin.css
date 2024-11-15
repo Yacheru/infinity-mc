@@ -1,0 +1,72 @@
+.admin-container {
+    height: 90%;
+    padding-top: 10px;
+}
+
+.admin-inner {
+    padding: 10px;
+}
+
+.admin-categories {
+    width: 100%;
+    height: 4%;
+}
+
+.admin-category {
+    width: 33%;
+    height: 100%;
+    margin-right: 10px;
+}
+
+.admin-category:last-child {
+    margin-right: 0;
+}
+
+.user-items {
+    height: 96%;
+    padding-top: 10px;
+    gap: 5%;
+}
+
+.user-item {
+    position: relative;
+    gap: 10px;
+}
+
+.user-item .item {
+    width: 50%;
+    color: whitesmoke;
+}
+
+.item {
+    height: 30px;
+}
+
+.item-roles {
+    cursor: pointer;
+    padding-left: 45px;
+}
+
+.delete-user {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: -45px;
+    content: '';
+    z-index: 1;
+    border-left-color: transparent;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.delete-user::before {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    content: '';
+    background: url("../../../assets/root/trash.svg") no-repeat;
+}

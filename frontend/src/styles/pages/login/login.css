@@ -1,0 +1,123 @@
+.login-container {
+    width: 100%;
+    height: 90%;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-block {
+    width: 500px;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 3.5rem;
+    color: whitesmoke;
+    font-weight: 500;
+    padding-bottom: 50px;
+}
+
+.footer-text {
+    transition: all 1s;
+    cursor: pointer;
+    user-select: none;
+}
+
+.footer-text:hover {
+    color: whitesmoke;
+    transition: all .3s;
+}
+
+.inner-login-block {
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+}
+
+.input {
+    width: 100%;
+    height: 45px;
+    padding-left: 50px;
+    position: relative;
+}
+
+.input-wrapper {
+    margin-bottom: 10px;
+}
+
+.input:last-child {
+    margin-bottom: 0;
+}
+
+.input-user, .input-password, .input-email {
+    position: relative;
+}
+
+.input-user::before, .input-password::before, .input-email::before .input-code::before {
+    position: absolute;
+    content: "";
+    top: 10px;
+    left: 15px;
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+}
+
+.input-user::before {
+    background: url("../../../assets/root/username.svg");
+}
+
+.input-password::before {
+    background: url("../../../assets/root/password.svg");
+}
+
+.input-email::before {
+    background: url("../../../assets/root/email.svg");
+}
+
+.input-code::before {
+    background: url("../../../assets/root/email.svg");
+}
+
+.input-error {
+    color: red;
+    padding: 0 0 5px 10px;
+}
+
+.submit-button {
+    height: 45px;
+}
+
+.submit-button[disabled] {
+    cursor: not-allowed;
+}
+
+.modal-code-description {
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.input-code {
+    padding-right: 50px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right-style: none;
+}
+
+.button-code {
+    padding: 0 30px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left-style: none;
+    transition: all .5s;
+}
+
+.submit-error {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.button-code[disabled] {
+    cursor: not-allowed;
+}

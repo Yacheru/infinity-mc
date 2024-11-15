@@ -38,43 +38,61 @@
     position: relative;
 }
 
-.header__auth {
+.header__button {
+    width: 250px;
+    height: 40px;
     color: whitesmoke;
-    padding: 0 70px 0 70px;
+    padding: 0 50px 0 30px;
 }
 
-.header__auth__list {
-
-}
-
-.header__auth-item {
-    padding: 10px 20px 10px 40px;
-    border-radius: 10px;
-    background: #1a1a1a;
-    transition: all .5s;
-}
-
-.header__auth-item:hover {
-    transition: all .5s;
-    color: #BBBBBBDD;
-}
-
-.header-login {
-    text-align: center;
-}
-
-.header__auth-item-link{
+.header__button-item {
     position: relative;
+    border-radius: 10px;
+    transition: all .5s;
+    cursor: pointer;
 }
 
-.header__auth-item-link::before {
+.header__button-item.open {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.header__button-item:has(.login) {
+    padding: 10px;
+}
+
+.header__button-item:hover {
+    transition: all .5s;
+}
+
+.login::before {
     position: absolute;
     content: "";
-    top: 0;
-    right: 46px;
+    top: 7px;
+    right: 100px;
     width: 24px;
     height: 24px;
     background: url("../../../assets/icons/root/log-in.svg") no-repeat;
+}
+
+.profile::before {
+    position: absolute;
+    content: "";
+    top: 7px;
+    left: 10px;
+    width: 24px;
+    height: 24px;
+    background: url("../../../assets/root/username.svg") no-repeat;
+}
+
+.profile::after {
+    position: absolute;
+    content: "";
+    top: 7px;
+    right: -1px;
+    width: 24px;
+    height: 24px;
+    background: url("../../../assets/root/arrow-drop-down-rounded.svg") no-repeat;
 }
 
 .header__item-link:after {
@@ -104,3 +122,57 @@
           margin: 0 15px 0 15px;
       }
   }
+
+.profile-list {
+
+}
+
+.profile-list-item {
+    position: relative; /* Для правильного позиционирования dropdown */
+    padding-top: 10px;
+}
+
+.profile-list-item-link {
+    padding-left: 16px;
+    color: whitesmoke;
+}
+
+.profile-list-item-link:hover {
+    color: #ddd; /* Легкий эффект при наведении */
+}
+
+.dropdown-list {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 100%;
+    max-width: 200px;
+    border-radius: 10px;
+    padding: 5px 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    display: none;
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-list.open {
+    margin-top: 15px;
+    display: block;
+    width: 100%;
+    opacity: 1;
+    transform: translateY(0);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.dropdown-list-item {
+    padding: 10px;
+    transition: all .3s;
+}
+
+.dropdown-list-item:hover {
+    background-color: #444;
+    transition: all .3s;
+}

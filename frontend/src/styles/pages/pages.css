@@ -26,6 +26,10 @@
     display: flex;
 }
 
+.t-center {
+    text-align: center;
+}
+
 .center {
     align-items: center;
     justify-content: center;
@@ -33,6 +37,14 @@
 
 .reverse {
     flex-direction: row-reverse;
+}
+
+.col {
+    flex-direction: column;
+}
+
+.row {
+    flex-direction: row;
 }
 
 .pd-8 {

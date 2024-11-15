@@ -25,19 +25,31 @@
 }
 
 .punishment-body__tr {
-    height: 10%;
+    position: relative;
+    height: 65px;
     border: 1px solid transparent;
     border-radius: 10px;
     transition: all .3s ease-in-out;
 }
 
 .punishment-body__tr:hover {
-    border: 1px solid #ffffff;
+    background-color: rgba(241, 19, 19, 0.03);
+    border: 1px solid #f11313;
+    transition: all .1s;
+}
+
+.punishment-body__tr:hover.p-elapsed {
+    background-color: rgba(19, 241, 23, 0.03);
+    border: 1px solid #13f117;
 }
 
 .punishment-body__tr-no-push {
     justify-content: center;
     font-size: xx-large;
+}
+
+.punishment-body__tr:nth-last-child(2):not(:last-child) {
+    margin-right: 0;
 }
 
 .forever {
@@ -69,8 +81,31 @@
     white-space: pre-line;
 }
 
-
 .punishment-tr-item__time {
     cursor: pointer;
     user-select: none;
+}
+
+.configure-punishment {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    left: 259px;
+    content: '';
+    z-index: 1;
+    border-left-color: transparent;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.configure-punishment::before {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    content: '';
+    background: url("../../../assets/root/settings.svg") no-repeat;
 }

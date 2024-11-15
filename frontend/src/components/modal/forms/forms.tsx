@@ -2,11 +2,11 @@ import { IData, Durations } from "$types/data";
 import { IPaymentsService } from "$types/api";
 import { IForm } from "$types/modal";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, ChangeEvent, MouseEvent, FocusEvent } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
-import PaymentsService from "@api/axios/entities/payments";
+import PaymentsService from "@api/axios/requests/payments.ts";
 import data from "@config/data.json";
 import { AxiosResponse } from "axios"
 
@@ -22,62 +22,20 @@ export default function Form({ item }: IForm) {
 
     const checkboxRef = useRef(null)
 
-    const [nickname, setNickname] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
     const [placeholder, setPlaceholder] = useState<string>('Продолжить')
     const [checkbox, setCheckbox] = useState<boolean>(true)
     const [emailDirty, setEmailDirty] = useState<boolean>(false)
     const [nicknameDirty, setNicknameDirty] = useState<boolean>(false)
-    const [nicknameError, setNicknameError] = useState<string>(t('components.forms.forms.nicknameErrors.empty'))
-    const [emailError, setEmailError] = useState<string>(t('components.forms.forms.emailErrors.empty'))
     const [formValid, setFormValid] = useState<boolean>(false)
     const [duration, setDuration] = useState<Durations>("15552000")
 
+
     useEffect(() => {
-        if (emailError || nicknameError || checkbox) {
-            setFormValid(false)
-        } else {
-            setFormValid(true)
-        }
-    }, [emailError, nicknameError, checkbox])
+        setFormValid(checkbox)
+    }, [checkbox])
 
-    const nicknameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNickname(e.target.value)
-        if (e.target.value.length < 3) {
-            setNicknameError(t('components.forms.forms.nicknameErrors.short'))
-            if (!e.target.value) {
-                setNicknameError(t('components.forms.forms.nicknameErrors.empty'))
-            }
-            e.target.classList.add('required')
-        } else {
-            e.target.classList.remove('required')
-            setNicknameError('')
-        }
-    }
-
-    const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
-        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        if (!re.test(String(e.target.value).toLowerCase())) {
-            setEmailError(t('components.forms.forms.emailErrors.invalid'))
-            e.target.classList.add('required')
-        } else {
-            e.target.classList.remove('required')
-            setEmailError('')
-        }
-    }
-
-    const checkboxHandler = (e: React.MouseEvent<HTMLInputElement>) => {
+    const checkboxHandler = (e: MouseEvent<HTMLInputElement>) => {
         setCheckbox(!e.currentTarget.checked)
-    }
-
-    const blurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
-        switch (e.target.name) {
-            case 'email':
-                return setEmailDirty(true)
-            case 'nickname':
-                return setNicknameDirty(true)
-        }
     }
 
     const submitForm = async () => {
@@ -109,33 +67,6 @@ export default function Form({ item }: IForm) {
 
     return (
         <form className={'modal__form'}>
-            <fieldset className={'modal__fieldset'}>
-                <label>
-                    {(nicknameDirty && nicknameError) && <div style={{color: "red"}}>{nicknameError}</div>}
-                    <div className={'input-container nickname'}>
-                        <input
-                            onChange={e => nicknameHandler(e)}
-                            value={nickname}
-                            onBlur={e => blurHandler(e)}
-                            className={'modal__input b w100'}
-                            name={'nickname'}
-                            type="text"
-                            placeholder={t('components.forms.forms.placeholders.nickname')}
-                            id={'nickname'}/>
-                    </div>
-                    {(emailDirty && emailError) && <div style={{color: "red"}}>{emailError}</div>}
-                    <div className={'input-container email'}>
-                        <input
-                            onChange={e => emailHandler(e)}
-                            value={email} onBlur={e => blurHandler(e)}
-                            className={'modal__input b w100'}
-                            name={'email'}
-                            type="text"
-                            placeholder={t('components.forms.forms.placeholders.email')}
-                            id={'email'}/>
-                    </div>
-                </label>
-            </fieldset>
             <div className={'modal__durations flex'}>
             {Array.from({length: Object.keys(typedData[item].costs).length}, (_, i) => (
                 <div

@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 
 import React from "react";
 
-import BansBody from "./punishmentsBody.tsx";
-import NoBans from "./noPunishments.tsx";
+import BansBody from "./punishmentsItem.tsx";
+import NoBans from "./no-punishments.tsx";
 import Loading from '../../../lazyLoad.tsx';
 
-import '@styles/pages/punishments/punishments.css';
 import {IPunishmentsService} from "$types/api";
-import PunishmentsService from "@api/axios/entities/punishments.ts";
+import PunishmentsService from "@api/axios/requests/punishments.ts";
+
+import '@styles/pages/punishments/punishments.css';
 
 const LIMIT = "10"
 
@@ -26,16 +27,16 @@ export default function PunishmentsList() {
             try {
                 const resp = await pService.getPunishments(LIMIT, type)
                 setStatus(resp.status)
-                setPunishments(resp.data)
+                setPunishments(resp.data.data)
             } catch (error: any) {
-                setStatus(error.response ? error.response.status : 500)
+                setStatus(error.response?.status)
             } finally {
                 setLoading(false)
             }
         }
 
         if (type === "bans" || type === "warns" || type === "mutes") {
-            getPunishments().then()
+            getPunishments()
         } else {
             setLoading(false)
         }
@@ -43,19 +44,19 @@ export default function PunishmentsList() {
 
     return (
         <main className={'punishment-box b bgc-1 br20'}>
-            <table className={'punishment-box__table'}>
-                <thead className={'punishment-table__header'}>
-                <tr className={'punishment-header__tr flex'}>
-                    <td className={'punishment-tr-item b bgc-2 br10 flex center'}>Нарушитель</td>
-                    <td className={'punishment-tr-item b bgc-2 br10 flex center'}>Причина</td>
-                    <td className={'punishment-tr-item b bgc-2 br10 flex center'}>Срок</td>
-                    <td className={'punishment-tr-item b bgc-2 br10 flex center'}>Администратор</td>
-                </tr>
-                </thead>
+            <div className={'punishment-box__table'}>
+                <div className={'punishment-table__header'}>
+                <div className={'punishment-header__tr flex'}>
+                    <div className={'punishment-tr-item b bgc-2 br10 flex center'}>Нарушитель</div>
+                    <div className={'punishment-tr-item b bgc-2 br10 flex center'}>Причина</div>
+                    <div className={'punishment-tr-item b bgc-2 br10 flex center'}>Срок</div>
+                    <div className={'punishment-tr-item b bgc-2 br10 flex center'}>Администратор</div>
+                </div>
+                </div>
                 {
                     loading ? <Loading /> : status === 200 ? <BansBody punishments={punishments}/> : <NoBans location={location} status={status}/>
                 }
-            </table>
+            </div>
         </main>
     )
 }

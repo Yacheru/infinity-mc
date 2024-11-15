@@ -1,0 +1,14 @@
+{
+  "mc": {
+    "map": "http://localhost:25803/",
+    "forum": "http://map.localhost/"
+  },
+  "apiURL": "http://localhost",
+  "apis": {
+    "pay": "http://localhost:81/pay",
+    "auth": "http://localhost:80/auth",
+    "news": "http://localhost:83/news",
+    "punishments": "http://localhost:82/p"
+  },
+  "status": "local"
+}

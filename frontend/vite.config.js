@@ -10,6 +10,7 @@ export default defineConfig({
       '@api': path.resolve(__dirname, 'src/api'),
       '@config': path.resolve(__dirname, 'src/config'),
       '@components': path.resolve(__dirname, 'src/components'),
+      '@hooks': path.resolve(__dirname, 'src/hooks'),
       '$types': path.resolve(__dirname, 'src/types'),
     }
   }

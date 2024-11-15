@@ -19,7 +19,7 @@
 .modal__content {
     padding: 20px;
     border-radius: 12px;
-    width: 670px;
+    min-width: 400px;
     transform: scale(0.5);
     transition: all .5s;
     color: whitesmoke;

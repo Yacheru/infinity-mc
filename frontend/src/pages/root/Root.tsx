@@ -2,12 +2,12 @@ import React from 'react'
 
 import { Toaster } from "react-hot-toast";
 
-import Header from '../../components/header/header.js'
+import Header from '@components/header/header.js'
 import Main from './components/main/main.js'
 import Aside from './components/aside/aside.js'
 import Footer from './components/footer/footer.js'
 
-import '../../styles/pages/root/root.css'
+import '@styles/pages/root/root.css'
 
 export default function Root() {
     return (

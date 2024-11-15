@@ -1,16 +1,16 @@
-import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { Toaster } from "solid-toast";
 
 import Router from "./routes.tsx";
+import { Context, auth } from './context';
 
 import '../i18next'
-
 import "./styles/index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <BrowserRouter>
-        <Router />
-    </BrowserRouter>
+    <Context.Provider value={{auth}}>
+        <BrowserRouter>
+            <Router />
+        </BrowserRouter>
+    </Context.Provider>
 );
