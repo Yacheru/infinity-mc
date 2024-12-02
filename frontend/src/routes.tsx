@@ -21,9 +21,10 @@ export default observer(function Router() {
     const { auth } = useContext(Context);
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
-            auth.checkAuth()
+        async function checkAuth() {
+            await auth.checkAuth()
         }
+        checkAuth();
     }, [])
 
     return (

@@ -2,7 +2,7 @@ import { IData, Durations } from "$types/data";
 import { IPaymentsService } from "$types/api";
 import { IForm } from "$types/modal";
 
-import { useEffect, useRef, useState, ChangeEvent, MouseEvent, FocusEvent } from "react";
+import { useEffect, useRef, useState, MouseEvent } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -24,8 +24,6 @@ export default function Form({ item }: IForm) {
 
     const [placeholder, setPlaceholder] = useState<string>('Продолжить')
     const [checkbox, setCheckbox] = useState<boolean>(true)
-    const [emailDirty, setEmailDirty] = useState<boolean>(false)
-    const [nicknameDirty, setNicknameDirty] = useState<boolean>(false)
     const [formValid, setFormValid] = useState<boolean>(false)
     const [duration, setDuration] = useState<Durations>("15552000")
 
@@ -45,9 +43,9 @@ export default function Form({ item }: IForm) {
         try {
             const costs = typedData[item].costs;
             const price: string = typedData[item].costs[duration as keyof typeof costs][1]
-            const payResponse: AxiosResponse = await payService.createPayment(price, email, item, nickname, duration)
+            // const payResponse: AxiosResponse = await payService.createPayment(price, item, duration)
 
-            return window.open(payResponse.data['confirmation']['confirmation_url'])
+            // return window.open(payResponse.data['confirmation']['confirmation_url'])
         } catch (e) {
             setPlaceholder("Ошибка запроса.")
 

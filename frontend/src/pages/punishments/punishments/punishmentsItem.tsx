@@ -1,11 +1,11 @@
 import { calculateTimeLeft } from '../../../utils/calculateTime.tsx'
-import {useContext} from "react";
-import {Context} from "../../../context.tsx";
+import { useContext } from "react";
+import { Context } from "../../../context.tsx";
 
-const PLAYER_HEAD_URL = 'https://visage.surgeplay.com/face/32/'
+const PLAYER_HEAD_URL = 'https://visage.surgeplay.com/head/32/'
 const CONSOLE_UUID = '00000000-0000-0000-0000-000000000000'
 
-export default function BansBody({ punishments = [] }: { punishments: any[] }) {
+export default function BansBody({ punishments }: { punishments: any[] }) {
     const { auth } = useContext(Context)
 
     return (
@@ -13,8 +13,10 @@ export default function BansBody({ punishments = [] }: { punishments: any[] }) {
         {
             punishments.map((punish, index) => {
                 const { victim, reason, time, operator } = punish;
-                const victimImage = `${PLAYER_HEAD_URL}${victim.uuid}`;
+                const victimUUID = victim.uuid !== CONSOLE_UUID ? victim.uuid : 'steve'
                 const operatorUUID = operator.uuid !== CONSOLE_UUID ? operator.uuid : 'console';
+
+                const victimImage = `${PLAYER_HEAD_URL}${victimUUID}?y=70`;
                 const operatorImage = `${PLAYER_HEAD_URL}${operatorUUID}`;
 
                 const expired = (new Date().getTime() / 1000) > time.end && time.end !== 0

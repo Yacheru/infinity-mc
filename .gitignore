@@ -1,5 +1,4 @@
 # FRONTEND
-api
 
 frontend/node_modules/
 frontend/pages/bans/
@@ -9,7 +8,9 @@ dist-ssr
 *.local
 
 api/*/*.yml
+api/*/.env
 api/*/.data
+api/.idea
 api/*/kafka-data
 configs
 api/*/build
