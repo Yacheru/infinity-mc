@@ -1,0 +1,5 @@
+build
+.idea
+deploy/pg-data
+deploy/elastic-data
+deploy/logstash

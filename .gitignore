@@ -8,10 +8,10 @@ dist-ssr
 *.local
 
 api/*/*.yml
-api/*/.env
-api/*/.data
+api/*/*.env
+api/*/deploy
 api/.idea
-api/*/kafka-data
+api/*/.idea
 configs
 api/*/build
 

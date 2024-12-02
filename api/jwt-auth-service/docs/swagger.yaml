@@ -1,0 +1,159 @@
+basePath: /
+definitions:
+  entities.RefreshToken:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  entities.User:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  entities.UserSignIn:
+    properties:
+      user_id:
+        type: string
+    type: object
+  handlers.response:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+host: localhost
+info:
+  contact: {}
+  description: jwt-auth-service
+  title: Jwt-Auth-Api
+  version: "1.0"
+paths:
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: sign-in user
+      parameters:
+      - description: refresh tokens
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entities.RefreshToken'
+      - description: User ID
+        in: query
+        name: guid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.response'
+      summary: User RefreshTokens
+      tags:
+      - tokens
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: sign-in user
+      parameters:
+      - description: sign in info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UserSignIn'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.response'
+      summary: User SignIn
+      tags:
+      - user-auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create user accoung
+      parameters:
+      - description: sign up info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entities.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.response'
+      summary: User SignUp
+      tags:
+      - user-auth
+swagger: "2.0"
