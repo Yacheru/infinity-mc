@@ -8,12 +8,14 @@ import (
 	"payments-service/init/config"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.49.1 --name=Producer
 type Producer interface {
-	PrepareMessage(message []byte, cfg *config.Config) error
+	PrepareMessage(message []byte) error
 }
 
 type KafkaProducer struct {
 	producer sarama.AsyncProducer
+	topic    string
 }
 
 func NewKafkaProducer(cfg *config.Config) (*KafkaProducer, error) {
@@ -28,17 +30,19 @@ func NewKafkaProducer(cfg *config.Config) (*KafkaProducer, error) {
 
 	return &KafkaProducer{
 		producer: producer,
+		topic:    cfg.KafkaTopic,
 	}, nil
 }
 
-func (p *KafkaProducer) PrepareMessage(message []byte, cfg *config.Config) error {
+func (p *KafkaProducer) PrepareMessage(message []byte) error {
 	logger.DebugF("prepare message: %s", constants.LoggerCategoryKafka, string(message))
-	logger.DebugF("sent to topic: %v", constants.LoggerCategoryKafka, cfg.KafkaTopic)
 
 	p.producer.Input() <- &sarama.ProducerMessage{
-		Topic: cfg.KafkaTopic,
+		Topic: p.topic,
 		Value: sarama.ByteEncoder(message),
 	}
+
+	logger.DebugF("sent to topic: %v", constants.LoggerCategoryKafka, p.topic)
 
 	return nil
 }
