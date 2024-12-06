@@ -1,4 +1,4 @@
-package payments
+package service
 
 import (
 	"context"
@@ -42,9 +42,12 @@ func (p *Payments) AcceptPayment(ctx context.Context, paid *entities.Paid) error
 		Duration: paid.Object.Metadata.Duration,
 		Service:  paid.Object.Metadata.Service,
 	})
-
-	err = p.producer.PrepareMessage(message, p.cfg)
 	if err != nil {
+		logger.Error(err.Error(), constants.LoggerCategoryService)
+		return err
+	}
+
+	if err := p.producer.PrepareMessage(message); err != nil {
 		logger.Error(err.Error(), constants.LoggerCategoryService)
 		return err
 	}
