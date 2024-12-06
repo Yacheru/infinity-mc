@@ -6,4 +6,4 @@
 - Golang, React.Js (MobX), Goose, Gin, Git, Docker/Docker-compose;
 - Redis, ScyllaDB, MySQL, MongoDB, PostgreSQL (pgx, sqlx), Kafka (Sarama).
 
-### Backend сервисы в папке ./api
+### Backend сервисы в папке [api](./api)
