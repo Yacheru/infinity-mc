@@ -15,11 +15,13 @@ import (
 	r "jwt-auth-service/internal/repository/redis"
 )
 
+//go:generate go run github.com/vektra/mockery/v2@v2.49.2 --name=AuthPostgresRepository
 type AuthPostgresRepository interface {
 	SetToken(ctx context.Context, userId string, session *entities.Session) error
 	RemoveToken(ctx context.Context, refreshToken string) error
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.49.2 --name=UserPostgresRepository
 type UserPostgresRepository interface {
 	StoreNewUser(ctx context.Context, u *entities.User) (*entities.User, error)
 	GetUserByRefresh(ctx context.Context, refreshToken string) (*entities.User, error)
@@ -30,15 +32,18 @@ type UserPostgresRepository interface {
 	UpdateRole(ctx context.Context, id, role string) error
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.49.2 --name=AuthRedisRepository
 type AuthRedisRepository interface {
 	SetSession(ctx context.Context, userId string, session *entities.Session) error
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.49.2 --name=UserRedisRepository
 type UserRedisRepository interface {
 	StoreNewUser(ctx context.Context, u *entities.User) error
 	GetUserById(ctx context.Context, userId string) (*entities.User, error)
 }
 
+//go:generate go run github.com/vektra/mockery/v2@v2.49.2 --name=AuthMongoRepository
 type AuthMongoRepository interface {
 	SetCode(ctx context.Context, email string, code int, expiration time.Time) error
 	GetCode(ctx context.Context, email string, code int) error
